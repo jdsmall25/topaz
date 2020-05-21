@@ -62,7 +62,7 @@ function getPower(target)
     elseif player_rank >= 3 then
         regen_power = 2
         refresh_power = 2
-    else--if player_rank == 2 then
+    elseif player_rank == 2 then
         regen_power = 1
         refresh_power = 1
     end
