@@ -154,3 +154,5 @@ FORCE_SPAWN_QM_RESET_TIME = 300 -- Number of seconds the ??? remains hidden for 
 
 --METAL CHANGES
 DISABLE_LOTTERY_NM_SYSTEM = 1 -- Set to 1 to disable the lottery system for NMs and have them spawn like normal mobs.
+ALWAYS_GRANT_NATION_RING = 1 -- Set to 1 to always grant a nation ring regardless of race.
+STARTING_WARP_RING = 1 -- Set to 1 to grant a warp ring at character creation.
