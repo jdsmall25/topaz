@@ -28,8 +28,8 @@ ENABLE_ROV     = 0
 ENABLE_VOIDWATCH = 0 -- Not an expansion, but has its own storyline.
 
 -- FIELDS OF VALOR/Grounds of Valor settings
-ENABLE_FIELD_MANUALS  = 1 -- Enables Fields of Valor
-ENABLE_GROUNDS_TOMES  = 1 -- Enables Grounds of Valor
+ENABLE_FIELD_MANUALS  = 0 -- Enables Fields of Valor
+ENABLE_GROUNDS_TOMES  = 0 -- Enables Grounds of Valor
 REGIME_WAIT = 1 -- Make people wait till 00:00 game time as in retail. If it's 0, there is no wait time.
 
 -- TREASURE CASKETS
@@ -42,7 +42,7 @@ CASKET_DROP_RATE = 0.1
 -- This generally results in a more accurate presentation of your selected expansions
 -- as well as a less confusing player experience for things that are disabled (things that are disabled are not loaded)
 -- This feature correlates to the content_tag column in the SQL files
-RESTRICT_CONTENT = 0
+RESTRICT_CONTENT = 1
 
 -- CHARACTER CONFIG
 INITIAL_LEVEL_CAP = 50 -- The initial level cap for new players.  There seems to be a hardcap of 255.
@@ -151,3 +151,6 @@ DIG_GRANT_BURROW = 0 -- Set to 1 to grant burrow ability
 DIG_GRANT_BORE = 0 -- Set to 1 to grant bore ability
 ENM_COOLDOWN = 120  -- Number of hours before a player can obtain same KI for ENMs (default: 5 days)
 FORCE_SPAWN_QM_RESET_TIME = 300 -- Number of seconds the ??? remains hidden for after the despawning of the mob it force spawns.
+
+--METAL CHANGES
+DISABLE_LOTTERY_NM_SYSTEM = 1 -- Set to 1 to disable the lottery system for NMs and have them spawn like normal mobs.

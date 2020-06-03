@@ -8,6 +8,7 @@ require("scripts/globals/magic")
 require("scripts/globals/utils")
 require("scripts/globals/zone")
 require("scripts/globals/msg")
+require("scripts/globals/settings")
 -----------------------------------
 
 tpz = tpz or {}
@@ -45,6 +46,7 @@ end
 
 -- is a lottery NM already spawned or primed to pop?
 local function lotteryPrimed(phList)
+   
     local nm
     for k, v in pairs(phList) do
         nm = GetMobByID(v)
@@ -58,6 +60,8 @@ end
 -- potential lottery placeholder was killed
 tpz.mob.phOnDespawn = function(ph, phList, chance, cooldown, immediate)
     if type(immediate) ~= "boolean" then immediate = false end
+    
+    if DISABLE_LOTTERY_NM_SYSTEM == 1 then return false end
 
     local phId = ph:getID()
     local nmId = phList[phId]
