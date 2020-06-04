@@ -27,6 +27,3 @@ DELETE FROM mob_spawn_points WHERE
 (mobid = 17547402 AND mobname = "Kikklix_Longlegs") OR
 (mobid = 17547424 AND mobname = "Karashix_Swollenskull") OR
 (mobid = 17613048 OR mobid = 17613052 OR mobid = 17613054 AND mobname = "Goliath");
-
---Makes the Warp ring usable instantly upon equip and makes the cooldown 60secs.
-UPDATE item_usable SET useDelay=0,reuseDelay=60 WHERE name="warp_ring" AND itemid=28540;
