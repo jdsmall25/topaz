@@ -157,3 +157,4 @@ DISABLE_LOTTERY_NM_SYSTEM = 1 -- Set to 1 to disable the lottery system for NMs 
 ALWAYS_GRANT_NATION_RING = 1 -- Set to 1 to always grant a nation ring regardless of race.
 STARTING_WARP_RING = 1 -- Set to 1 to grant a warp ring at character creation.
 ALWAYS_ALLOW_CHOCOBO_RENTAL = 1 -- Set to 1 to always allow a chocobo rental without a license or any level.
+FREE_HOMEPOINT_TELEPORTS = 1 -- Set to 1 to make Homepoint Teleporting free.
