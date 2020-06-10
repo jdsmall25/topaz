@@ -25,8 +25,6 @@ function onEffectGain(target,effect)
     target:addMod(tpz.mod.REGEN, power[1])
     target:addMod(tpz.mod.REFRESH, power[2])
 
-    target:PrintToPlayer(target:getMod(tpz.mod.REGEN))
-
 end
 
 function onEffectTick(target,effect)
