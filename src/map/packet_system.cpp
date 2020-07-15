@@ -1029,7 +1029,7 @@ void SmallPacket0x029(map_session_data_t* session, CCharEntity* PChar, CBasicPac
         if (ToSlotID < 82) // 80 + 1
         {
             ShowDebug("SmallPacket0x29: Trying to unite items\n", FromLocationID, FromSlotID);
-            return;
+//            return;
         }
 
         uint8 NewSlotID = PChar->getStorage(ToLocationID)->InsertItem(PItem);
