@@ -5728,4 +5728,4 @@ namespace battleutils
             return nullptr;
         }
     }
-};
+}
