@@ -1500,7 +1500,7 @@ bool CBattleEntity::OnAttack(CAttackState& state, action_t& action)
         actionTarget.animation = attack.GetAnimationID();
 
         if (attack.CheckCover()){
-            PTarget = attackRound.m_coverEntity;
+            PTarget = attackRound.GetCoverEntity();
             list.ActionTargetID = PTarget->id;
         }
 
