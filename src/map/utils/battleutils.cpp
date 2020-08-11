@@ -5625,7 +5625,7 @@ namespace battleutils
     {
         CBattleEntity* coverTarget = nullptr;
 
-        uint32 coverPartnerID = coveree:GetLocalVar("COVER_PARTNER");
+        uint32 coverPartnerID = coveree->GetLocalVar("COVER_PARTNER");
 
         if (!coveree->StatusEffectContainer->HasStatusEffect(EFFECT_COVER) || coverPartnerID == -1)
         {
