@@ -47,6 +47,9 @@ CAttackRound::CAttackRound(CBattleEntity* attacker, CBattleEntity* defender)
     // Grab a trick attack assistant.
     m_taEntity = battleutils::getAvailableTrickAttackChar(attacker, attacker->GetBattleTarget());
 
+    // Get cover partner
+    m_coverEntity = battleutils::getCoverTarget(attacker->GetBattleTarget(), attacker);
+
     // Build main weapon attacks.
     CreateAttacks(dynamic_cast<CItemWeapon*>(attacker->m_Weapons[SLOT_MAIN]), RIGHTATTACK);
 
@@ -146,6 +149,16 @@ bool CAttackRound::GetSATAOccured()
 CBattleEntity*	CAttackRound::GetTAEntity()
 {
     return m_taEntity;
+}
+
+/************************************************************************
+*																		*
+*  Returns the TA entity.												*
+*																		*
+************************************************************************/
+CBattleEntity*	CAttackRound::GetCoverEntity()
+{
+    return m_coverEntity;
 }
 
 /************************************************************************

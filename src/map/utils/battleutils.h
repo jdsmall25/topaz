@@ -246,6 +246,8 @@ namespace battleutils
     int32               GetScaledItemModifier(CBattleEntity*, CItemEquipment*, Mod);
     DAMAGETYPE          GetSpikesDamageType(SUBEFFECT spikesType);
     DAMAGETYPE          GetEnspellDamageType(ENSPELL enspellType);
+
+    CBattleEntity*      GetCoverTarget(CBattleEntity* coveree, CBattleEntity* PMob);
 };
 
 #endif

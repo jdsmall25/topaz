@@ -446,6 +446,24 @@ bool CAttack::CheckCounter()
     return m_isCountered;
 }
 
+bool CAttack::IsCovered()
+{
+    return m_isCovered;
+}
+
+bool CAttack::CheckCover()
+{
+    if (m_attackRound->coverEntity != nullprt && !(m_attackRound->coverEntity->isDead())
+    {
+        m_isCovered = true;
+    }
+    else {
+        m_isCovered = false;
+    }
+
+    return m_isCovered;
+}
+
 /************************************************************************
 *																		*
 *  Processes the damage for this swing.									*
@@ -453,6 +471,8 @@ bool CAttack::CheckCounter()
 ************************************************************************/
 void CAttack::ProcessDamage()
 {
+    m_isCovered = IsCovered();
+
     // Sneak attack.
     if (m_attacker->GetMJob() == JOB_THF &&
         m_isFirstSwing &&

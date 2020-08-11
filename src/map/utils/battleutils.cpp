@@ -5620,4 +5620,111 @@ namespace battleutils
                 return DAMAGE_NONE;
         }
     }
+
+    CBattleEntity* GetCoverTarget(CBattleEntity* coveree, CBattleEntity* PMob)
+    {
+        CBattleEntity* coverTarget = nullptr;
+
+        uint32 coverPartnerID = coveree:GetLocalVar("COVER_PARTNER");
+
+        if (!coveree->StatusEffectContainer->HasStatusEffect(EFFECT_COVER) || coverPartnerID == -1)
+        {
+            return coverTarget;
+        }
+
+        float covereeX = coveree->loc.p.x;
+        float covereeZ = coveree->loc.p.z;
+        float mobX = PMob->loc.p.x;
+        float mobZ = PMob->loc.p.z;
+
+        float xdif = covereeX - mobX;
+        float zdif = covereeZ - mobZ;
+        float slope = 0;
+        float maxSlope = 0;
+        float minSlope = 0;
+        bool zDependent = true; //using a slope where z is dependent var
+        if (abs(xdif) <= abs(zdif))
+        {
+            slope = xdif / zdif;
+
+            float angle = (float)atan((double)1) * 2 - atan(slope);
+
+            float zoffset = cos(angle) / 2;
+            float xoffset = sin(angle) / 2;
+            float maxXpoint = mobX + xoffset;
+            float maxZpoint = mobZ - zoffset;
+            float minXpoint = mobX - xoffset;
+            float minZpoint = mobZ + zoffset;
+            maxSlope = ((maxXpoint - covereeX) / (maxZpoint - covereeZ));
+            minSlope = ((minXpoint - covereeX) / (minZpoint - covereeZ));
+            zDependent = false;
+        }
+        else {
+            slope = zdif / xdif;
+
+            float angle = (float)atan((double)1) * 2 - atan(slope);
+
+            float xoffset = cos(angle) / 2;
+            float zoffset = sin(angle) / 2;
+            float maxXpoint = mobX - xoffset;
+            float maxZpoint = mobZ + zoffset;
+            float minXpoint = mobX + xoffset;
+            float minZpoint = mobZ - zoffset;
+            maxSlope = (maxZpoint - covereeZ) / (maxXpoint - covereeX);
+            minSlope = (minZpoint - covereeZ) / (minXpoint - covereeX);
+        }
+
+        //Find the cover source
+        if (coveree->PParty != nullptr)
+        {
+            if (coveree->PParty->m_PAlliance != nullptr)
+            {
+                for (uint8 a = 0; a < coveree->PParty->m_PAlliance->partyList.size(); ++a)
+                {
+                    for (uint8 i = 0; i < coveree->PParty->m_PAlliance->partyList.at(a)->members.size(); ++i)
+                    {
+                        CBattleEntity* member = coveree->PParty->m_PAlliance->partyList.at(a)->members.at(i);
+                        if (coverPartnerID == member->id)
+                        {
+                            coverTarget = member;
+                        }
+                    }
+                }
+            }
+        else {//no alliance
+            for (uint8 i = 0; i < coveree->PParty->members.size(); ++i)
+            {
+                CBattleEntity* member = coveree->PParty->members.at(i);
+                if (member->id == coverPartnerID)
+                {
+                    coverTarget = member;
+                }
+            }
+
+        }
+
+        if (coverTarget != nullptr && distance(coverTarget->loc.p, PMob->loc.p) <= distance(coveree->loc.p, PMob->loc.p))
+        {
+            float coverPartnerXdif = coverTarget->loc.p.x - covereeX;
+            float coverPartnerZdif = coverTarget->loc.p.z - covereeZ;
+            if (zDependent)
+            {
+                if ((coverPartnerZdif <= coverPartnerXdif * maxSlope) &&
+                    (coverPartnerZdif >= coverPartnerXdif * minSlope))
+                {
+                    return coverTarget;
+                }
+            }
+            else {
+                if ((coverPartnerXdif <= coverPartnerZdif * maxSlope) &&
+                    (coverPartnerXdif >= coverPartnerZdif * minSlope))
+                {
+                    return coverTarget;
+                }
+            }
+        }
+        else {
+            return nullptr;
+        }
+    }
 };

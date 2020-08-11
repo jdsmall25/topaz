@@ -21,11 +21,13 @@ end
 
 function onUseAbility(player,target,ability)
     local baseDuration    = 15
-    local bonusTime       = utils.clamp(math.floor((player:getMod(dsp.mod.VIT) + player:getMod(dsp.mod.MND) - target:getMod(dsp.mod.VIT) * 2) / 4), 0, 15)
+    local bonusTime       = utils.clamp(math.floor((player:getStat(tpz.mod.VIT) + player:getStat(tpz.mod.MND) - target:getStat(tpz.mod.VIT) * 2) / 4), 0, 15)
     local duration        = baseDuration + bonusTime + player:getMerit(tpz.merit.COVER_EFFECT_LENGTH)
 
+    player:addStatusEffect(tpz.effect.COVER, 1, 0, duration)
     target:addStatusEffect(tpz.effect.COVER, 1, 0, duration)
-    target:setLocalVar("COVER_SOURCE", player)
+
+    target:setLocalVar("COVER_PARTNER", player:getID())
 
     ability:setMsg(tpz.msg.basic.COVER_SUCCESS)
 

@@ -59,11 +59,13 @@ public:
     void						SetSATA(bool value);		// Sets the SATA flag.
     bool						GetSATAOccured();			// Returns the SATA flag.
     CBattleEntity*				GetTAEntity();				// Returns the TA entity.
+    CBattleEntity*				GetCoverEntity();			// Returns the Cover entity.
 
 private:
     CBattleEntity*				m_attacker;					// The attacker.
     CBattleEntity*				m_defender;					// The defender.
     CBattleEntity*				m_taEntity;					// The trick attack entity.
+    CBattleEntity*              m_coverEntity;              // The cover target entity
     std::vector<CAttack>		m_attackSwings;				// The list of attacks for this round.
     bool						m_sataOccured;				// Flag: Did SATA occur during the round?
     bool						m_kickAttackOccured;		// Flag: Did a kick attack occur during the round?
