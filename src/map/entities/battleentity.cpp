@@ -1500,8 +1500,8 @@ bool CBattleEntity::OnAttack(CAttackState& state, action_t& action)
         actionTarget.animation = attack.GetAnimationID();
 
         if (attack.CheckCover()){
-            PTarget = attackRound->m_coverPartner;
-            list.ActionTargetID = attackRound->m_coverPartner->id;
+            PTarget = attackRound.m_coverEntity;
+            list.ActionTargetID = PTarget->id;
         }
 
         if (PTarget->StatusEffectContainer->HasStatusEffect(EFFECT_PERFECT_DODGE, 0))
