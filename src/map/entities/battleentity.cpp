@@ -1667,14 +1667,14 @@ bool CBattleEntity::OnAttack(CAttackState& state, action_t& action)
                 {
                     charutils::TrySkillUP((CCharEntity*)PTarget, SKILL_EVASION, GetMLevel());
                 }
-            }
 
-            if (attack.IsCovered() && this->objtype == TYPE_MOB && actionTarget.param >= 0)
-            {
-                int32 newCE = (CMobEntity*)this->PEnmityContainer->GetCE(PTarget) + 200;
-                printf(to_string(newCE));
-                (CMobEntity*)this->PEnmityContainer->SetCE(PTarget, newCE);
-                (CMobEntity*)this->PEnmityContainer->LowerEnmityByPercent(OriginalTarget, 10, nullptr);
+                if (attack.IsCovered() && actionTarget.param >= 0)
+                {
+                    PEnmityContainer* container = ((CMobEntity*)this)->PEnmityContainer
+                    int32 newCE = ((CMobEntity*)this)->PEnmityContainer->GetCE(PTarget) + 200;
+                    container->SetCE(PTarget, newCE);
+                    container->LowerEnmityByPercent(OriginalTarget, 10, nullptr);
+                }
             }
 
         }
