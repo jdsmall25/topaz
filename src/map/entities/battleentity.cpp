@@ -1499,9 +1499,9 @@ bool CBattleEntity::OnAttack(CAttackState& state, action_t& action)
         // Set the swing animation.
         actionTarget.animation = attack.GetAnimationID();
 
-        if (attack.CheckCover){
-            PTarget = attackround->m_coverPartner;
-            list.ActionTargetID = attackround->m_coverPartner->id;
+        if (attack.CheckCover()){
+            PTarget = attackRound->m_coverPartner;
+            list.ActionTargetID = attackRound->m_coverPartner->id;
         }
 
         if (PTarget->StatusEffectContainer->HasStatusEffect(EFFECT_PERFECT_DODGE, 0))
