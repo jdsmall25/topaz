@@ -153,7 +153,7 @@ CBattleEntity*	CAttackRound::GetTAEntity()
 
 /************************************************************************
 *																		*
-*  Returns the TA entity.												*
+*  Returns the Cover entity.												*
 *																		*
 ************************************************************************/
 CBattleEntity*	CAttackRound::GetCoverEntity()

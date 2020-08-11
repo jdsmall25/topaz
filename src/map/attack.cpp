@@ -471,8 +471,6 @@ bool CAttack::CheckCover()
 ************************************************************************/
 void CAttack::ProcessDamage()
 {
-    m_isCovered = IsCovered();
-
     // Sneak attack.
     if (m_attacker->GetMJob() == JOB_THF &&
         m_isFirstSwing &&

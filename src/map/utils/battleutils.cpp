@@ -5629,7 +5629,7 @@ namespace battleutils
 
         if (!coveree->StatusEffectContainer->HasStatusEffect(EFFECT_COVER) || coverPartnerID == -1)
         {
-            return coverTarget;
+            return nullptr;
         }
 
         float covereeX = coveree->loc.p.x;
