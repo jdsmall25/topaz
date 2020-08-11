@@ -20,9 +20,26 @@ end
 
 
 function onUseAbility(player,target,ability)
-    local baseDuration    = 15
-    local bonusTime       = utils.clamp(math.floor((player:getStat(tpz.mod.VIT) + player:getStat(tpz.mod.MND) - target:getStat(tpz.mod.VIT) * 2) / 4), 0, 15)
-    local duration        = baseDuration + bonusTime + player:getMerit(tpz.merit.COVER_EFFECT_LENGTH)
+    local baseDuration = 15
+    local bonusTime    = utils.clamp(math.floor((player:getStat(tpz.mod.VIT) + player:getStat(tpz.mod.MND) - target:getStat(tpz.mod.VIT) * 2) / 4), 0, 15)
+
+    local mainHand     = player:getEquipID(tpz.slot.MAIN)
+    local helm         = player:getEquipID(tpz.slot.HEAD)
+    local body         = player:getEquipID(tpz.slot.BODY)
+
+    if (mainHand == 16604) then              -- Save the Queen - duration + 5
+        bonusTime = bonusTime + 5
+    elseif (mainHand == 20728) then          -- Kheshig Blade - duration + 8
+        bonusTime = bonusTime + 8
+    end
+
+    if (helm == 27690 or helm == 23046) then -- Reverence Cornet +1 / +2 - duration + 9
+        bonusTime = bonusTime + 9
+    elseif (helm == 23381) then              -- Reverence Coronet +3 - duration + 10
+        bonusTime = bonusTime + 10
+    end
+
+    local duration = baseDuration + bonusTime + player:getMerit(tpz.merit.COVER_EFFECT_LENGTH)
 
     player:addStatusEffect(tpz.effect.COVER, 1, 0, duration)
     target:addStatusEffect(tpz.effect.COVER, 1, 0, duration)
