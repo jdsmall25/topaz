@@ -5737,7 +5737,11 @@ namespace battleutils
         enmity->SetCE(coverTarget, currentCE + 200);
         enmity->LowerEnmityByPercent(coveree, 10, nullptr);
 
-        printf("Current Emnity: %d, Coverer: %d\n", enmity->GetCE(coverTarget));
-        printf("Current Emnity: %d, Coverer: %d\n", enmity->GetCE(coveree));
+        int32 targetCE = enmity->GetCE(coverTarget);
+        int32 covereeCE = enmity->GetCE(coveree);
+
+        printf("Emnity Coverer Target: %d", targetCE);
+        printf("Emnity Coveree: %d", covereeCe);
+
     }
 };
