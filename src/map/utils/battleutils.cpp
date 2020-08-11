@@ -5691,36 +5691,37 @@ namespace battleutils
                     }
                 }
             }
-        }
-        else {//no alliance
-            for (uint8 i = 0; i < coveree->PParty->members.size(); ++i)
-            {
-                CBattleEntity* member = coveree->PParty->members.at(i);
-                if (member->id == coverPartnerID)
+
+            else {//no alliance
+                for (uint8 i = 0; i < coveree->PParty->members.size(); ++i)
                 {
-                    coverTarget = member;
+                    CBattleEntity* member = coveree->PParty->members.at(i);
+                    if (member->id == coverPartnerID)
+                    {
+                        coverTarget = member;
+                    }
                 }
+
             }
 
-        }
-
-        if (coverTarget != nullptr && distance(coverTarget->loc.p, PMob->loc.p) <= distance(coveree->loc.p, PMob->loc.p))
-        {
-            float coverPartnerXdif = coverTarget->loc.p.x - covereeX;
-            float coverPartnerZdif = coverTarget->loc.p.z - covereeZ;
-            if (zDependent)
+            if (coverTarget != nullptr && distance(coverTarget->loc.p, PMob->loc.p) <= distance(coveree->loc.p, PMob->loc.p))
             {
-                if ((coverPartnerZdif <= coverPartnerXdif * maxSlope) &&
-                    (coverPartnerZdif >= coverPartnerXdif * minSlope))
+                float coverPartnerXdif = coverTarget->loc.p.x - covereeX;
+                float coverPartnerZdif = coverTarget->loc.p.z - covereeZ;
+                if (zDependent)
                 {
-                    return coverTarget;
+                    if ((coverPartnerZdif <= coverPartnerXdif * maxSlope) &&
+                        (coverPartnerZdif >= coverPartnerXdif * minSlope))
+                    {
+                        return coverTarget;
+                    }
                 }
-            }
-            else {
-                if ((coverPartnerXdif <= coverPartnerZdif * maxSlope) &&
-                    (coverPartnerXdif >= coverPartnerZdif * minSlope))
-                {
-                    return coverTarget;
+                else {
+                    if ((coverPartnerXdif <= coverPartnerZdif * maxSlope) &&
+                        (coverPartnerXdif >= coverPartnerZdif * minSlope))
+                    {
+                        return coverTarget;
+                    }
                 }
             }
         }
@@ -5728,4 +5729,4 @@ namespace battleutils
             return nullptr;
         }
     }
-}
+};
