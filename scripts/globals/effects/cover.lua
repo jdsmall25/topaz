@@ -11,5 +11,5 @@ function onEffectTick(target,effect)
 end
 
 function onEffectLose(target,effect)
-    target:setLocalVar("COVER_PARTNER", -1)
+    target:setLocalVar("COVER_PARTNER", 0)
 end
