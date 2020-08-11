@@ -1487,7 +1487,7 @@ bool CBattleEntity::OnAttack(CAttackState& state, action_t& action)
 
     list.ActionTargetID = PTarget->id;
 
-    CBattleEntity OriginalTarget = PTarget;
+    CBattleEntity* OriginalTarget = PTarget;
 
     /////////////////////////////////////////////////////////////////////////
     //	Start of the attack loop.
@@ -1669,10 +1669,10 @@ bool CBattleEntity::OnAttack(CAttackState& state, action_t& action)
                 }
             }
 
-            if (attack.IsCovered && this.objecttype == TYPE_MOB && actionTarget.param >= 0)
+            if (attack.IsCovered && this->objecttype == TYPE_MOB && actionTarget.param >= 0)
             {
                 int32 newCE = this.getCE(PTarget) + 200;
-                print(newCE);
+                printf(newCE);
                 this->PEnmityContainer->SetCE(PTarget, newCE);
                 this->PEnmityContainer->LowerEnmityByPercent(OriginalTarget, 10, nullptr);
             }
