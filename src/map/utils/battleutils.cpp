@@ -5732,7 +5732,7 @@ namespace battleutils
 
     void HandleCoverEmnity(CBattleEntity* coveree, CBattleEntity* coverTarget, CBattleEntity* PMob)
     {
-        CEnmitycontainer* enmity = ((CMobEntity*)this)->PEnmityContainer;
+        CEnmityContainer* enmity = ((CMobEntity*)this)->PEnmityContainer;
         int32 currentCE = enmity->GetCE(coverTarget);
         enmity->SetCE(coverTarget, currentCE + 200);
         enmity->LowerEnmityByPercent(coveree, 10, nullptr);
