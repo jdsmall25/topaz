@@ -248,6 +248,7 @@ namespace battleutils
     DAMAGETYPE          GetEnspellDamageType(ENSPELL enspellType);
 
     CBattleEntity*      GetCoverTarget(CBattleEntity* coveree, CBattleEntity* PMob);
+    void                HandleCoverEmnity(CBattleEntity* coveree, CBattleEntity* coverTarget, CBattleEntity* PMob);
 };
 
 #endif

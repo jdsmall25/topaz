@@ -5729,4 +5729,12 @@ namespace battleutils
         return nullptr;
 
     }
+
+    void HandleCoverEmnity(CBattleEntity* coveree, CBattleEntity* coverTarget, CBattleEntity* PMob)
+    {
+        CEmnitycontainer* emnity = ((CMobEntity*)this)->PEnmityContainer;
+        int32 currentCE = emnity->GetCE(coverTarget);
+        emnity->SetCE(coverTarget, currentCE + 200);
+        emnity->LowerEnmityByPercent(coveree, 10, nullptr);
+    }
 };
