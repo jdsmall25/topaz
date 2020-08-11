@@ -5725,8 +5725,8 @@ namespace battleutils
                 }
             }
         }
-        else {
-            return nullptr;
-        }
+
+        return nullptr;
+
     }
 };
