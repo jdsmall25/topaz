@@ -1671,8 +1671,8 @@ bool CBattleEntity::OnAttack(CAttackState& state, action_t& action)
                 if (attack.IsCovered() && actionTarget.param >= 0)
                 {
                     CEnmityContainer* container = ((CMobEntity*)this)->PEnmityContainer;
-                    int32 newCE = container->GetCE(PTarget) + 200;
-                    container->SetCE(PTarget, newCE);
+                    int32 currentCE = container->GetCE(PTarget);
+                    container->SetCE(PTarget, currentCE + 200);
                     container->LowerEnmityByPercent(OriginalTarget, 10, nullptr);
                 }
             }
