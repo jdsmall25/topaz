@@ -1669,10 +1669,10 @@ bool CBattleEntity::OnAttack(CAttackState& state, action_t& action)
                 }
             }
 
-            if (attack.IsCovered && this->objecttype == TYPE_MOB && actionTarget.param >= 0)
+            if (attack.IsCovered && this->objtype == TYPE_MOB && actionTarget.param >= 0)
             {
-                int32 newCE = this.getCE(PTarget) + 200;
-                printf(newCE);
+                int32 newCE = this->getCE(PTarget) + 200;
+                printf(to_string(newCE));
                 this->PEnmityContainer->SetCE(PTarget, newCE);
                 this->PEnmityContainer->LowerEnmityByPercent(OriginalTarget, 10, nullptr);
             }
