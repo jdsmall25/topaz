@@ -5740,8 +5740,8 @@ namespace battleutils
         int32 targetCE = enmity->GetCE(coverTarget);
         int32 covereeCE = enmity->GetCE(coveree);
 
-        printf("Emnity Coverer Target: %d", targetCE);
-        printf("Emnity Coveree: %d", covereeCE);
+        printf("Emnity Target: %ld\n", targetCE);
+        printf("Emnity Coveree: %ld\n", covereeCE);
 
     }
 };
