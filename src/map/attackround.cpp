@@ -48,7 +48,7 @@ CAttackRound::CAttackRound(CBattleEntity* attacker, CBattleEntity* defender)
     m_taEntity = battleutils::getAvailableTrickAttackChar(attacker, attacker->GetBattleTarget());
 
     // Get cover partner
-    m_coverEntity = battleutils::getCoverTarget(attacker->GetBattleTarget(), attacker);
+    m_coverEntity = battleutils::GetCoverTarget(attacker->GetBattleTarget(), attacker);
 
     // Build main weapon attacks.
     CreateAttacks(dynamic_cast<CItemWeapon*>(attacker->m_Weapons[SLOT_MAIN]), RIGHTATTACK);
