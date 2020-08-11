@@ -5625,7 +5625,7 @@ namespace battleutils
     {
         CBattleEntity* coverTarget = nullptr;
 
-        uint32 coverPartnerID = coveree->GetLocalVar("COVER_PARTNER");
+        int32 coverPartnerID = coveree->GetLocalVar("COVER_PARTNER");
 
         if (!coveree->StatusEffectContainer->HasStatusEffect(EFFECT_COVER) || coverPartnerID == -1)
         {
@@ -5691,6 +5691,7 @@ namespace battleutils
                     }
                 }
             }
+        }
         else {//no alliance
             for (uint8 i = 0; i < coveree->PParty->members.size(); ++i)
             {
