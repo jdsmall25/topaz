@@ -5630,7 +5630,7 @@ namespace battleutils
         uint32 covereeID           = coveree->id;
 
         //If the coveree is in a party, find a cover target
-        if (coveree->PParty != nullptr)
+        if (coveree->PParty != nullptr && coveree->objtype == TYPE_PC)
         {
             if (coveree->PParty->m_PAlliance != nullptr)
             {
@@ -5758,7 +5758,7 @@ namespace battleutils
 
     bool IsMagicCovered(CCharEntity* target)
     {
-        CItem* head = target->getEquip(SLOT_HEAD);
+        CItem* head   = target->getEquip(SLOT_HEAD);
         int32 headID  = head->getID();
         if (target != nullptr && (headID == 12515 || // Gallant Coronet
                                   headID == 15231 || // Gallant Coronet +1
