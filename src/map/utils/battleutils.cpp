@@ -5627,7 +5627,7 @@ namespace battleutils
     CBattleEntity* GetCoverTarget(CBattleEntity* coveree, CBattleEntity* PMob)
     {
         CBattleEntity* coverTarget = nullptr;
-        uint32 covereeID           = coveree->getID();
+        uint32 covereeID           = coveree->id;
 
         //If the coveree is in a party, find a cover target
         if (coveree->PParty != nullptr)
@@ -5642,7 +5642,7 @@ namespace battleutils
 
                         if (covereeID == member->GetLocalVar("COVER_PARTNER") &&
                             member->StatusEffectContainer->HasStatusEffect(EFFECT_COVER) &&
-                            member->IsAlive)
+                            member->IsAlive())
                         {
                             coverTarget = member;
                             break;
@@ -5656,7 +5656,7 @@ namespace battleutils
                     CBattleEntity* member = coveree->PParty->members.at(i);
                     if (covereeID == member->GetLocalVar("COVER_PARTNER") &&
                         member->StatusEffectContainer->HasStatusEffect(EFFECT_COVER) &&
-                        member->IsAlive)
+                        member->isAlive())
                     {
                         coverTarget = member;
                         break;
