@@ -5642,7 +5642,7 @@ namespace battleutils
 
                         if (covereeID == member->GetLocalVar("COVER_PARTNER") &&
                             member->StatusEffectContainer->HasStatusEffect(EFFECT_COVER) &&
-                            member->IsAlive())
+                            member->isAlive())
                         {
                             coverTarget = member;
                             break;
