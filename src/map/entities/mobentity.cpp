@@ -611,10 +611,13 @@ void CMobEntity::OnMobSkillFinished(CMobSkillState& state, action_t& action)
         }
         else
         {
-            CBattleEntity* PCoverTarget = battleutils::GetCoverTarget(PTarget, this);
-            if (PCoverTarget != nullptr)
+            if (PTarget->objtype == TYPE_PC)
             {
-                PTarget = PCoverTarget;
+                CBattleEntity* PCoverTarget = battleutils::GetCoverTarget(PTarget, this);
+                if (PCoverTarget != nullptr)
+                {
+                    PTarget = PCoverTarget;
+                }
             }
 
             PAI->TargetFind->findSingleTarget(PTarget, findFlags);
