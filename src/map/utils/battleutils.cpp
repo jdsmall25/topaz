@@ -1774,7 +1774,7 @@ namespace battleutils
     *                                                                       *
     ************************************************************************/
 
-    int32 TakePhysicalDamage(CBattleEntity* PAttacker, CBattleEntity* PDefender, PHYSICAL_ATTACK_TYPE physicalAttackType, int32 damage, bool isBlocked, uint8 slot, uint16 tpMultiplier, CBattleEntity* taChar, bool giveTPtoVictim, bool giveTPtoAttacker, bool isCounter)
+    int32 TakePhysicalDamage(CBattleEntity* PAttacker, CBattleEntity* PDefender, PHYSICAL_ATTACK_TYPE physicalAttackType, int32 damage, bool isBlocked, uint8 slot, uint16 tpMultiplier, CBattleEntity* taChar, bool giveTPtoVictim, bool giveTPtoAttacker, bool isCounter, bool isCovered)
     {
         auto weapon = GetEntityWeapon(PAttacker, (SLOTTYPE)slot);
         giveTPtoAttacker = giveTPtoAttacker && !PAttacker->StatusEffectContainer->HasStatusEffect(EFFECT_MEIKYO_SHISUI);
@@ -1888,6 +1888,7 @@ namespace battleutils
 
                 damage = (damage * absorb) / 100;
             }
+
         }
         if (damage > 0)
         {
@@ -1896,6 +1897,7 @@ namespace battleutils
             damage = HandleStoneskin(PDefender, damage);
             HandleAfflatusMiseryDamage(PDefender, damage);
         }
+
         damage = std::clamp(damage, -99999, 99999);
 
         int32 corrected = PDefender->takeDamage(damage, PAttacker, attackType, damageType);
@@ -2011,6 +2013,7 @@ namespace battleutils
             PAttacker->StatusEffectContainer->DelStatusEffectsByFlag(EFFECTFLAG_ATTACK);
 
         return damage;
+
     }
 
     /************************************************************************
@@ -5624,57 +5627,9 @@ namespace battleutils
     CBattleEntity* GetCoverTarget(CBattleEntity* coveree, CBattleEntity* PMob)
     {
         CBattleEntity* coverTarget = nullptr;
+        uint32 covereeID           = coveree->getID();
 
-        uint32 coverPartnerID = coveree->GetLocalVar("COVER_PARTNER");
-
-        if (!coveree->StatusEffectContainer->HasStatusEffect(EFFECT_COVER) || coverPartnerID == 0)
-        {
-            return nullptr;
-        }
-
-        float covereeX = coveree->loc.p.x;
-        float covereeZ = coveree->loc.p.z;
-        float mobX = PMob->loc.p.x;
-        float mobZ = PMob->loc.p.z;
-
-        float xdif = covereeX - mobX;
-        float zdif = covereeZ - mobZ;
-        float slope = 0;
-        float maxSlope = 0;
-        float minSlope = 0;
-        bool zDependent = true; //using a slope where z is dependent var
-        if (abs(xdif) <= abs(zdif))
-        {
-            slope = xdif / zdif;
-
-            float angle = (float)atan((double)1) * 2 - atan(slope);
-
-            float zoffset = cos(angle) / 2;
-            float xoffset = sin(angle) / 2;
-            float maxXpoint = mobX + xoffset;
-            float maxZpoint = mobZ - zoffset;
-            float minXpoint = mobX - xoffset;
-            float minZpoint = mobZ + zoffset;
-            maxSlope = ((maxXpoint - covereeX) / (maxZpoint - covereeZ));
-            minSlope = ((minXpoint - covereeX) / (minZpoint - covereeZ));
-            zDependent = false;
-        }
-        else {
-            slope = zdif / xdif;
-
-            float angle = (float)atan((double)1) * 2 - atan(slope);
-
-            float xoffset = cos(angle) / 2;
-            float zoffset = sin(angle) / 2;
-            float maxXpoint = mobX - xoffset;
-            float maxZpoint = mobZ + zoffset;
-            float minXpoint = mobX + xoffset;
-            float minZpoint = mobZ - zoffset;
-            maxSlope = (maxZpoint - covereeZ) / (maxXpoint - covereeX);
-            minSlope = (minZpoint - covereeZ) / (minXpoint - covereeX);
-        }
-
-        //Find the cover source
+        //If the coveree is in a party, find a cover target
         if (coveree->PParty != nullptr)
         {
             if (coveree->PParty->m_PAlliance != nullptr)
@@ -5684,43 +5639,99 @@ namespace battleutils
                     for (uint8 i = 0; i < coveree->PParty->m_PAlliance->partyList.at(a)->members.size(); ++i)
                     {
                         CBattleEntity* member = coveree->PParty->m_PAlliance->partyList.at(a)->members.at(i);
-                        if (coverPartnerID == member->id)
+
+                        if (covereeID == member->GetLocalVar("COVER_PARTNER") &&
+                            member->StatusEffectContainer->HasStatusEffect(EFFECT_COVER) &&
+                            member->IsAlive)
                         {
                             coverTarget = member;
+                            break;
                         }
                     }
                 }
             }
-
             else {//no alliance
                 for (uint8 i = 0; i < coveree->PParty->members.size(); ++i)
                 {
                     CBattleEntity* member = coveree->PParty->members.at(i);
-                    if (member->id == coverPartnerID)
+                    if (covereeID == member->GetLocalVar("COVER_PARTNER") &&
+                        member->StatusEffectContainer->HasStatusEffect(EFFECT_COVER) &&
+                        member->IsAlive)
                     {
                         coverTarget = member;
+                        break;
                     }
                 }
 
             }
 
-            if (coverTarget != nullptr && distance(coverTarget->loc.p, PMob->loc.p) <= distance(coveree->loc.p, PMob->loc.p))
+            if (coverTarget != nullptr)
             {
-                float coverPartnerXdif = coverTarget->loc.p.x - covereeX;
-                float coverPartnerZdif = coverTarget->loc.p.z - covereeZ;
-                if (zDependent)
+                float covereeX  = coveree->loc.p.x;
+                float covereeZ  = coveree->loc.p.z;
+                float mobX      = PMob->loc.p.x;
+                float mobZ      = PMob->loc.p.z;
+
+                float xdif      = covereeX - mobX;
+                float zdif      = covereeZ - mobZ;
+                float slope     = 0;
+                float maxSlope  = 0;
+                float minSlope  = 0;
+                bool zDependent = true; //using a slope where z is dependent var
+
+                if (abs(xdif) <= abs(zdif))
                 {
-                    if ((coverPartnerZdif <= coverPartnerXdif * maxSlope) &&
-                        (coverPartnerZdif >= coverPartnerXdif * minSlope))
-                    {
-                        return coverTarget;
-                    }
+                    slope = xdif / zdif;
+
+
+                    float angle = (float)atan((double)1) * 2 - atan(slope);
+
+                    float zoffset   = cos(angle) / 2;
+                    float xoffset   = sin(angle) / 2;
+                    float maxXpoint = mobX + xoffset;
+                    float maxZpoint = mobZ - zoffset;
+                    float minXpoint = mobX - xoffset;
+                    float minZpoint = mobZ + zoffset;
+
+                    maxSlope = ((maxXpoint - covereeX) / (maxZpoint - covereeZ));
+                    minSlope = ((minXpoint - covereeX) / (minZpoint - covereeZ));
+
+                    zDependent = false;
                 }
                 else {
-                    if ((coverPartnerXdif <= coverPartnerZdif * maxSlope) &&
-                        (coverPartnerXdif >= coverPartnerZdif * minSlope))
+                    slope = zdif / xdif;
+
+                    float angle = (float)atan((double)1) * 2 - atan(slope);
+
+                    float xoffset   = cos(angle) / 2;
+                    float zoffset   = sin(angle) / 2;
+                    float maxXpoint = mobX - xoffset;
+                    float maxZpoint = mobZ + zoffset;
+                    float minXpoint = mobX + xoffset;
+                    float minZpoint = mobZ - zoffset;
+
+                    maxSlope = (maxZpoint - covereeZ) / (maxXpoint - covereeX);
+                    minSlope = (minZpoint - covereeZ) / (minXpoint - covereeX);
+                }
+
+                if (distance(coverTarget->loc.p, PMob->loc.p) <= distance(coveree->loc.p, PMob->loc.p))
+                {
+                    float coverPartnerXdif = coverTarget->loc.p.x - covereeX;
+                    float coverPartnerZdif = coverTarget->loc.p.z - covereeZ;
+                    if (zDependent)
                     {
-                        return coverTarget;
+                        if ((coverPartnerZdif <= coverPartnerXdif * maxSlope) &&
+                            (coverPartnerZdif >= coverPartnerXdif * minSlope))
+                        {
+                            return coverTarget;
+                        }
+                    }
+                    else {
+                        if ((coverPartnerXdif <= coverPartnerZdif * maxSlope) &&
+                            (coverPartnerXdif >= coverPartnerZdif * minSlope))
+                        {
+                            return coverTarget;
+                        }
                     }
                 }
             }
@@ -5743,5 +5754,16 @@ namespace battleutils
         ShowDebug("Emnity Target: %ld\n", targetCE);
         ShowDebug("Emnity Coveree: %ld\n", covereeCE);
 
+    }
+
+    bool IsMagicCovered(CCharEntity* coverTarget)
+    {
+        CItem* head = coverTarget->getEquip(SLOT_HEAD);
+        int32 id  = head->getID();
+        if (coverTarget != nullptr && (id == 12515 || id == 15231 || id = 27669 || id == 27690 || id == 23046 || id == 23381))
+        {
+            return true;
+        }
+        return false;
     }
 };

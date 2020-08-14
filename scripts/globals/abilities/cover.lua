@@ -23,13 +23,13 @@ function onUseAbility(player,target,ability)
     local baseDuration = 15
     local bonusTime    = utils.clamp(math.floor((player:getStat(tpz.mod.VIT) + player:getStat(tpz.mod.MND) - target:getStat(tpz.mod.VIT) * 2) / 4), 0, 15)
 
-    local mainHand     = player:getEquipID(tpz.slot.MAIN)
+    local main         = player:getEquipID(tpz.slot.MAIN)
     local helm         = player:getEquipID(tpz.slot.HEAD)
     local body         = player:getEquipID(tpz.slot.BODY)
 
-    if (mainHand == 16604) then              -- Save the Queen - duration + 5
+    if (main == 16604) then              -- Save the Queen - duration + 5
         bonusTime = bonusTime + 5
-    elseif (mainHand == 20728) then          -- Kheshig Blade - duration + 8
+    elseif (main == 20728) then          -- Kheshig Blade - duration + 8
         bonusTime = bonusTime + 8
     end
 
@@ -42,9 +42,8 @@ function onUseAbility(player,target,ability)
     local duration = baseDuration + bonusTime + player:getMerit(tpz.merit.COVER_EFFECT_LENGTH)
 
     player:addStatusEffect(tpz.effect.COVER, 1, 0, duration)
-    target:addStatusEffect(tpz.effect.COVER, 1, 0, duration)
 
-    target:setLocalVar("COVER_PARTNER", player:getID())
+    player:setLocalVar("COVER_PARTNER", target:getID())
 
     ability:setMsg(tpz.msg.basic.COVER_SUCCESS)
 
