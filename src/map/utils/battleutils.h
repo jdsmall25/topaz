@@ -249,7 +249,7 @@ namespace battleutils
 
     CBattleEntity*      GetCoverTarget(CBattleEntity* coveree, CBattleEntity* PMob);
     void                HandleCoverEmnity(CBattleEntity* coveree, CBattleEntity* coverTarget, CBattleEntity* PMob);
-    bool                IsMagicCovered(CCharEntity* target)
+    bool                IsMagicCovered(CCharEntity* target);
 };
 
 #endif
