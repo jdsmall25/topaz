@@ -5643,7 +5643,7 @@ namespace battleutils
                     for (uint8 i = 0; i < coveree->PParty->m_PAlliance->partyList.at(a)->members.size(); ++i)
                     {
                         CBattleEntity* member = coveree->PParty->m_PAlliance->partyList.at(a)->members.at(i);
-                        unit32 coverPartnerID = member->GetLocalVar("COVER_PARTNER");
+                        uint32 coverPartnerID = member->GetLocalVar("COVER_PARTNER");
                         ShowDebug("Cover Partner ID: %ld\n", coverPartnerID);
 
                         if (covereeID == member->GetLocalVar("COVER_PARTNER") &&
@@ -5662,7 +5662,7 @@ namespace battleutils
                 {
                     ShowDebug("Coveree not in an alliance");
                     CBattleEntity* member = coveree->PParty->members.at(i);
-                    coverPartnerID = member->GetLocalVar("COVER_PARTNER")
+                    coverPartnerID = member->GetLocalVar("COVER_PARTNER");
                     ShowDebug("Cover Partner ID: %ld\n", coverPartnerID);
 
                     if (covereeID == member->GetLocalVar("COVER_PARTNER") &&
