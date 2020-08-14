@@ -5739,7 +5739,7 @@ namespace battleutils
                 }
             }
         }
-        ShowDebug("No Cover Target found, returning nullptr");
+        ShowDebug("No Cover Target found, returning nullptr\n");
         return nullptr;
 
     }
@@ -5761,18 +5761,21 @@ namespace battleutils
 
     bool IsMagicCovered(CCharEntity* target)
     {
-        CItem* head   = target->getEquip(SLOT_HEAD);
-        int32 headID  = head->getID();
-        ShowDebug("Head Item ID = %ld\n", headID);
-        if (target != nullptr && (headID == 12515 || // Gallant Coronet
-                                  headID == 15231 || // Gallant Coronet +1
-                                  headID == 27669 || // Reverence Coronet
-                                  headID == 27690 || // Reverence Coronet +1
-                                  headID == 23046 || // Reverence Coronet +2
-                                  headID == 23381 )) // Reverence Coronet +3
-        {   
-            ShowDebug("Magic is covered.\n");
-            return true;
+        if (target != nullptr)
+        {
+            CItem* head   = target->getEquip(SLOT_HEAD);
+            int32 headID  = head->getID();
+            ShowDebug("Head Item ID = %ld\n", headID);
+            if (headID == 12515 || // Gallant Coronet
+                headID == 15231 || // Gallant Coronet +1
+                headID == 27669 || // Reverence Coronet
+                headID == 27690 || // Reverence Coronet +1
+                headID == 23046 || // Reverence Coronet +2
+                headID == 23381 )) // Reverence Coronet +3
+            {   
+                ShowDebug("Magic is covered.\n");
+                return true;
+            }
         }
         ShowDebug("Magic is NOT covered.\n");
         return false;
