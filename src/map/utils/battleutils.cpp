@@ -5771,7 +5771,7 @@ namespace battleutils
                 headID == 27669 || // Reverence Coronet
                 headID == 27690 || // Reverence Coronet +1
                 headID == 23046 || // Reverence Coronet +2
-                headID == 23381 )) // Reverence Coronet +3
+                headID == 23381 )  // Reverence Coronet +3
             {   
                 ShowDebug("Magic is covered.\n");
                 return true;
