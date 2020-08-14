@@ -5756,14 +5756,41 @@ namespace battleutils
 
     }
 
-    bool IsMagicCovered(CCharEntity* coverTarget)
+    bool IsMagicCovered(CCharEntity* target)
     {
-        CItem* head = coverTarget->getEquip(SLOT_HEAD);
-        int32 id  = head->getID();
-        if (coverTarget != nullptr && (id == 12515 || id == 15231 || id = 27669 || id == 27690 || id == 23046 || id == 23381))
+        CItem* head = target->getEquip(SLOT_HEAD);
+        int32 headID  = head->getID();
+        if (target != nullptr && (headID == 12515 || // Gallant Coronet
+                                  headID == 15231 || // Gallant Coronet +1
+                                  headID == 27669 || // Reverence Coronet
+                                  headID == 27690 || // Reverence Coronet +1
+                                  headID == 23046 || // Reverence Coronet +2
+                                  headID == 23381 )) // Reverence Coronet +3
         {
             return true;
         }
         return false;
     }
+
+/*    int32 HandleCoverAbsorb(CCharEntity* target, damage)
+    {
+        CItem* body  = target->getEquip(SLOT_BODY);
+        int32 bodyID     = body->getID();
+        int32 absorb = 0;
+
+        if (target != nullptr)
+        {
+            switch(id) {
+                case 15093: absorb = 20 // Valor Surcoat
+                case 14506: absorb = 20 // Valor Surcoat +1
+                case 10676: absorb = 30 // Valor Surcoat +2
+                case 26812: absorb = 32 // Caballarius Surcoat
+                case 26813: absorb = 35 // Caballarius Surcoat +1
+                case 23136: absorb = 38 // Caballarius Surcoat +2
+                case 23471: absorb = 41 // Caballarius Surcoat +3
+            }
+        }
+        return damage;
+
+    }*/
 };
