@@ -5628,10 +5628,14 @@ namespace battleutils
     {
         CBattleEntity* coverTarget = nullptr;
         uint32 covereeID           = coveree->id;
+        uint32 coverPartnerID      = 0;
+        
+        ShowDebug("Coveree ID: %ld\n", covereeID);
 
         //If the coveree is in a party, find a cover target
-        if (coveree->PParty != nullptr && coveree->objtype == TYPE_PC)
+        if (coveree->PParty != nullptr)
         {
+            ShowDebug("Coveree is in a party and a player");
             if (coveree->PParty->m_PAlliance != nullptr)
             {
                 for (uint8 a = 0; a < coveree->PParty->m_PAlliance->partyList.size(); ++a)
@@ -5639,11 +5643,14 @@ namespace battleutils
                     for (uint8 i = 0; i < coveree->PParty->m_PAlliance->partyList.at(a)->members.size(); ++i)
                     {
                         CBattleEntity* member = coveree->PParty->m_PAlliance->partyList.at(a)->members.at(i);
+                        unit32 coverPartnerID = member->GetLocalVar("COVER_PARTNER");
+                        ShowDebug("Cover Partner ID: %ld\n", coverPartnerID);
 
                         if (covereeID == member->GetLocalVar("COVER_PARTNER") &&
                             member->StatusEffectContainer->HasStatusEffect(EFFECT_COVER) &&
                             member->isAlive())
                         {
+                            ShowDebug("Found a Cover Partner in an alliance");
                             coverTarget = member;
                             break;
                         }
@@ -5653,11 +5660,16 @@ namespace battleutils
             else {//no alliance
                 for (uint8 i = 0; i < coveree->PParty->members.size(); ++i)
                 {
+                    ShowDebug("Coveree not in an alliance");
                     CBattleEntity* member = coveree->PParty->members.at(i);
+                    coverPartnerID = member->GetLocalVar("COVER_PARTNER")
+                    ShowDebug("Cover Partner ID: %ld\n", coverPartnerID);
+
                     if (covereeID == member->GetLocalVar("COVER_PARTNER") &&
                         member->StatusEffectContainer->HasStatusEffect(EFFECT_COVER) &&
                         member->isAlive())
                     {
+                        ShowDebug("Found a Cover Partner in a party");
                         coverTarget = member;
                         break;
                     }
