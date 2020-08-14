@@ -1282,6 +1282,7 @@ void CBattleEntity::OnCastFinished(CMagicState& state, action_t& action)
     {
         if (this->objtype == TYPE_MOB && PActionTarget->objtype != TYPE_MOB)
         {
+            ShowDebug("Getting a ability Cover Target.\n");
             CBattleEntity* PCoverTarget = battleutils::GetCoverTarget(PActionTarget, this);
             bool IsMagicCovered = battleutils::IsMagicCovered((CCharEntity*) PCoverTarget);
 

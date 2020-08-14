@@ -453,7 +453,7 @@ bool CAttack::IsCovered()
 
 bool CAttack::CheckCover()
 {
-    if (m_attackRound->GetCoverEntity() != nullptr && !(m_attackRound->GetCoverEntity()->isDead()))
+    if (m_attackRound->GetCoverEntity() != nullptr && (m_attackRound->GetCoverEntity()->isAlive()))
     {
         m_isCovered = true;
     }
