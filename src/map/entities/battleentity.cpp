@@ -1234,6 +1234,8 @@ void CBattleEntity::OnCastFinished(CMagicState& state, action_t& action)
 {
     auto PSpell = state.GetSpell();
     auto PActionTarget = static_cast<CBattleEntity*>(state.GetTarget());
+    CBattleEntity* POriginalTarget = PActionTarget;
+    CBattleEntity* PCoverTarget = nullptr;
 
     luautils::OnSpellPrecast(this, PSpell);
 
@@ -1280,7 +1282,7 @@ void CBattleEntity::OnCastFinished(CMagicState& state, action_t& action)
     }
     else
     {
-        if (this->objtype == TYPE_MOB && PActionTarget->objtype != TYPE_MOB)
+        if (this->objtype == TYPE_MOB && PActionTarget->objtype == TYPE_PC)
         {
             ShowDebug("Getting a magic Cover Target.\n");
             CBattleEntity* PCoverTarget = battleutils::GetCoverTarget(PActionTarget, this);
@@ -1357,6 +1359,11 @@ void CBattleEntity::OnCastFinished(CMagicState& state, action_t& action)
             else
             {
                 msg = PSpell->getAoEMessage();
+            }
+
+            if (PCoverTarget != nullptr)
+            {
+                battleutils::HandleCoverEmnity(POriginalTarget, PCoverTarget, this);
             }
         }
 

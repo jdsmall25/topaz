@@ -5763,11 +5763,13 @@ namespace battleutils
     {
         if (target != nullptr)
         {
-            CItem* head   = target->getEquip(SLOT_HEAD);
+            CItem* head  = target->getEquip(SLOT_HEAD);
+            int32 headID = 0;
+
             if (head != nullptr)
             {
+                headID = head->getID();
                 ShowDebug("Head Item ID = %ld\n", headID);
-                int32 headID  = head->getID();
             }            
             
             if (headID == 12515 || // Gallant Coronet
