@@ -5764,8 +5764,12 @@ namespace battleutils
         if (target != nullptr)
         {
             CItem* head   = target->getEquip(SLOT_HEAD);
-            int32 headID  = head->getID();
-            ShowDebug("Head Item ID = %ld\n", headID);
+            if (head != nullptr)
+            {
+                ShowDebug("Head Item ID = %ld\n", headID);
+                int32 headID  = head->getID();
+            }            
+            
             if (headID == 12515 || // Gallant Coronet
                 headID == 15231 || // Gallant Coronet +1
                 headID == 27669 || // Reverence Coronet
