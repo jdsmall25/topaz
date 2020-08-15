@@ -1360,11 +1360,6 @@ void CBattleEntity::OnCastFinished(CMagicState& state, action_t& action)
             {
                 msg = PSpell->getAoEMessage();
             }
-
-            if (PCoverTarget != nullptr)
-            {
-                battleutils::HandleCoverEmnity(POriginalTarget, PCoverTarget, this);
-            }
         }
 
         if (actionTarget.animation == 122)
@@ -1388,8 +1383,15 @@ void CBattleEntity::OnCastFinished(CMagicState& state, action_t& action)
             }
         }
         actionTarget.messageID = msg;
-
-        state.ApplyEnmity(PTarget, ce, ve);
+        
+        if (PCoverTarget != nullptr && this->objtype == TYPE_MOB)
+        {
+            ((CMobEntity*)this)->PEnmityContainer->UpdateEnmityFromCover(POriginalTarget, PTarget);
+        }
+        else
+        {
+            state.ApplyEnmity(PTarget, ce, ve);
+        }        
 
         if (PTarget->objtype == TYPE_MOB && msg != MSGBASIC_SHADOW_ABSORB) // If message isn't the shadow loss message, because I had to move this outside of the above check for it.
         {
@@ -1505,7 +1507,7 @@ bool CBattleEntity::OnAttack(CAttackState& state, action_t& action)
 
     list.ActionTargetID = PTarget->id;
 
-    CBattleEntity* OriginalTarget = PTarget;
+    CBattleEntity* POriginalTarget = PTarget;
 
     /////////////////////////////////////////////////////////////////////////
     //	Start of the attack loop.
@@ -1648,7 +1650,7 @@ bool CBattleEntity::OnAttack(CAttackState& state, action_t& action)
                     actionTarget.reaction = REACTION_BLOCK;
                 }
 
-                actionTarget.param = battleutils::TakePhysicalDamage(this, PTarget, attack.GetAttackType(), attack.GetDamage(), attack.IsBlocked(), attack.GetWeaponSlot(), 1, attackRound.GetTAEntity(), true, true, attack.IsCovered());
+                actionTarget.param = battleutils::TakePhysicalDamage(this, PTarget, attack.GetAttackType(), attack.GetDamage(), attack.IsBlocked(), attack.GetWeaponSlot(), 1, attackRound.GetTAEntity(), true, true, attack.IsCovered(), POriginalTarget);
                 if (actionTarget.param < 0)
                 {
                     actionTarget.param = -(actionTarget.param);
@@ -1684,11 +1686,6 @@ bool CBattleEntity::OnAttack(CAttackState& state, action_t& action)
                 if (!attack.IsCountered() && !attack.IsParried())
                 {
                     charutils::TrySkillUP((CCharEntity*)PTarget, SKILL_EVASION, GetMLevel());
-                }
-
-                if (attack.IsCovered() && actionTarget.param >= 0)
-                {
-                    battleutils::HandleCoverEmnity(OriginalTarget, PTarget, this);
                 }
             }
 

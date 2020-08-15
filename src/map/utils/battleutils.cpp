@@ -1774,7 +1774,7 @@ namespace battleutils
     *                                                                       *
     ************************************************************************/
 
-    int32 TakePhysicalDamage(CBattleEntity* PAttacker, CBattleEntity* PDefender, PHYSICAL_ATTACK_TYPE physicalAttackType, int32 damage, bool isBlocked, uint8 slot, uint16 tpMultiplier, CBattleEntity* taChar, bool giveTPtoVictim, bool giveTPtoAttacker, bool isCounter, bool isCovered)
+    int32 TakePhysicalDamage(CBattleEntity* PAttacker, CBattleEntity* PDefender, PHYSICAL_ATTACK_TYPE physicalAttackType, int32 damage, bool isBlocked, uint8 slot, uint16 tpMultiplier, CBattleEntity* taChar, bool giveTPtoVictim, bool giveTPtoAttacker, bool isCounter, bool isCovered, CBattleEntity* POriginalTarget)
     {
         auto weapon = GetEntityWeapon(PAttacker, (SLOTTYPE)slot);
         giveTPtoAttacker = giveTPtoAttacker && !PAttacker->StatusEffectContainer->HasStatusEffect(EFFECT_MEIKYO_SHISUI);
@@ -1938,7 +1938,10 @@ namespace battleutils
                 case TYPE_PC:
                     if (PAttacker->objtype == TYPE_MOB)
                     {
-                        ((CMobEntity*)PAttacker)->PEnmityContainer->UpdateEnmityFromAttack(PDefender, damage);
+                        if (isCovered && POriginalTarget != nullptr)
+                            ((CMobEntity*)PAttacker)->PEnmityContainer->UpdateEnmityFromCover(POriginalTarget, PDefender);
+                        else
+                            ((CMobEntity*)PAttacker)->PEnmityContainer->UpdateEnmityFromAttack(PDefender, damage);
                     }
                     break;
                 default:
@@ -5633,40 +5636,19 @@ namespace battleutils
 
         //If the coveree is in a party, find a cover target
         if (coveree->PParty != nullptr)
-        {
-            if (coveree->PParty->m_PAlliance != nullptr)
+        {            
+            for (uint8 i = 0; i < coveree->PParty->members.size(); ++i)
             {
-                for (uint8 a = 0; a < coveree->PParty->m_PAlliance->partyList.size(); ++a)
+                CBattleEntity* member = coveree->PParty->members.at(i);
+
+                if (covereeID == member->GetLocalVar("COVER_PARTNER") &&
+                    member->StatusEffectContainer->HasStatusEffect(EFFECT_COVER) &&
+                    member->isAlive())
                 {
-                    for (uint8 i = 0; i < coveree->PParty->m_PAlliance->partyList.at(a)->members.size(); ++i)
-                    {
-                        CBattleEntity* member = coveree->PParty->m_PAlliance->partyList.at(a)->members.at(i);
-
-                        if (covereeID == member->GetLocalVar("COVER_PARTNER") &&
-                            member->StatusEffectContainer->HasStatusEffect(EFFECT_COVER) &&
-                            member->isAlive())
-                        {
-                            coverTarget = member;
-                            break;
-                        }
-                    }
+                    coverTarget = member;
+                    break;
                 }
-            }
-            else {//no alliance
-                for (uint8 i = 0; i < coveree->PParty->members.size(); ++i)
-                {
-                    CBattleEntity* member = coveree->PParty->members.at(i);
-
-                    if (covereeID == member->GetLocalVar("COVER_PARTNER") &&
-                        member->StatusEffectContainer->HasStatusEffect(EFFECT_COVER) &&
-                        member->isAlive())
-                    {
-                        coverTarget = member;
-                        break;
-                    }
-                }
-
-            }
+            }          
 
             if (coverTarget != nullptr)
             {
@@ -5744,43 +5726,27 @@ namespace battleutils
 
     }
 
-    void HandleCoverEmnity(CBattleEntity* coveree, CBattleEntity* coverTarget, CBattleEntity* PMob)
-    {
-        CEnmityContainer* enmity = ((CMobEntity*)PMob)->PEnmityContainer;
-        int32 currentCE = enmity->GetCE(coverTarget);
-        enmity->SetCE(coverTarget, currentCE + 200);
-        enmity->LowerEnmityByPercent(coveree, 10, nullptr);
-
-        int32 targetCE = enmity->GetCE(coverTarget);
-        int32 covereeCE = enmity->GetCE(coveree);
-
-        ShowDebug("Emnity Target: %ld\n", targetCE);
-        ShowDebug("Emnity Coveree: %ld\n", covereeCE);
-
-    }
-
     bool IsMagicCovered(CCharEntity* target)
     {
         if (target != nullptr)
         {
             CItem* head  = target->getEquip(SLOT_HEAD);
-            int32 headID = 0;
 
             if (head != nullptr)
             {
-                headID = head->getID();
+                int32 headID = head->getID();
                 ShowDebug("Head Item ID = %ld\n", headID);
-            }            
             
-            if (headID == 12515 || // Gallant Coronet
-                headID == 15231 || // Gallant Coronet +1
-                headID == 27669 || // Reverence Coronet
-                headID == 27690 || // Reverence Coronet +1
-                headID == 23046 || // Reverence Coronet +2
-                headID == 23381 )  // Reverence Coronet +3
-            {   
-                ShowDebug("Magic is covered.\n");
-                return true;
+                if (headID == 12515 || // Gallant Coronet
+                    headID == 15231 || // Gallant Coronet +1
+                    headID == 27669 || // Reverence Coronet
+                    headID == 27690 || // Reverence Coronet +1
+                    headID == 23046 || // Reverence Coronet +2
+                    headID == 23381 )  // Reverence Coronet +3
+                {   
+                    ShowDebug("Magic is covered.\n");
+                    return true;
+                }
             }
         }
         ShowDebug("Magic is NOT covered.\n");
