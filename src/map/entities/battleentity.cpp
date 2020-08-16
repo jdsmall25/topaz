@@ -1386,7 +1386,7 @@ void CBattleEntity::OnCastFinished(CMagicState& state, action_t& action)
         
         if (PCoverTarget != nullptr && this->objtype == TYPE_MOB)
         {
-            ((CMobEntity*)this)->PEnmityContainer->UpdateEnmityFromCover(POriginalTarget, PTarget);
+            state.ApplyMagicCoverEnmity(POriginalTarget, PTarget, this);
         }
         else
         {

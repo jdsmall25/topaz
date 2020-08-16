@@ -49,6 +49,7 @@ public:
     void SpendCost();
     uint32 GetRecast();
     void ApplyEnmity(CBattleEntity* PTarget, int ce, int ve);
+    void ApplyMagicCoverEnmity(CBattleEntity* PCoveree, CBattleEntity* PCoverTarget, CBattleEntity* PMob);
 
     void SetInstantCast(const bool bInstantCast) { m_instantCast = bInstantCast; }
 

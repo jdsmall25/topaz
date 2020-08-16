@@ -351,3 +351,8 @@ void CMagicState::TryInterrupt(CBattleEntity* PAttacker)
         m_interrupted = true;
     }
 }
+
+void ApplyMagicCoverEnmity(CBattleEntity* PCoveree, CBattleEntity* PCoverTarget, CBattleEntity* PMob)
+{
+    ((CMobEntity*)PMob)->PEnmityContainer->UpdateEnmityFromCover(PCoveree, PCoverTarget);
+}
