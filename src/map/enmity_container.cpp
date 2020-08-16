@@ -454,14 +454,18 @@ bool CEnmityContainer::IsTameable()
 }
 
 void CEnmityContainer::UpdateEnmityFromCover(CBattleEntity* PCoveree, CBattleEntity* PCoverTarget)
-    {        
-        int32 currentCE = CEnmityContainer::GetCE(PCoverTarget);
-        CEnmityContainer::SetCE(PCoverTarget, currentCE + 200);
-        CEnmityContainer::LowerEnmityByPercent(PCoveree, 10, nullptr);
+{
+    // Update Enmity if Coveree and CoverTarget are not nullptr
+    if (PCoveree != nullptr && PCoverTarget != nullptr)
+    {
+        int32 currentCE = GetCE(PCoverTarget);
+        SetCE(PCoverTarget, currentCE + 200);
+        LowerEnmityByPercent(PCoveree, 10, nullptr);
 
-        int32 targetCE = CEnmityContainer::GetCE(PCoverTarget);
-        int32 covereeCE = CEnmityContainer::GetCE(PCoveree);
+        int32 newTargetCE = CEnmityContainer::GetCE(PCoverTarget);
+        int32 newCovereeCE = CEnmityContainer::GetCE(PCoveree);
 
-        ShowDebug("Emnity Target: %ld\n", targetCE);
-        ShowDebug("Emnity Coveree: %ld\n", covereeCE);
+        ShowDebug("Emnity Target: %ld\n", newTargetCE);
+        ShowDebug("Emnity Coveree: %ld\n", newCovereeCE);
     }
+}
