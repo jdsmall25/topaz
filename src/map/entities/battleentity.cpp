@@ -1386,6 +1386,7 @@ void CBattleEntity::OnCastFinished(CMagicState& state, action_t& action)
         
         if (PCoverTarget != nullptr && this->objtype == TYPE_MOB)
         {
+            ShowDebug("Attempting to apply Magic Cover Enmity.\n")
             state.ApplyMagicCoverEnmity(POriginalTarget, PTarget, this);
         }
         else
@@ -1650,7 +1651,7 @@ bool CBattleEntity::OnAttack(CAttackState& state, action_t& action)
                     actionTarget.reaction = REACTION_BLOCK;
                 }
 
-                actionTarget.param = battleutils::TakePhysicalDamage(this, PTarget, attack.GetAttackType(), attack.GetDamage(), attack.IsBlocked(), attack.GetWeaponSlot(), 1, attackRound.GetTAEntity(), true, true, attack.IsCovered(), POriginalTarget);
+                actionTarget.param = battleutils::TakePhysicalDamage(this, PTarget, attack.GetAttackType(), attack.GetDamage(), attack.IsBlocked(), attack.GetWeaponSlot(), 1, attackRound.GetTAEntity(), true, true, attack.IsCountered(), attack.IsCovered(), POriginalTarget);
                 if (actionTarget.param < 0)
                 {
                     actionTarget.param = -(actionTarget.param);

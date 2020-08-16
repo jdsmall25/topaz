@@ -1804,11 +1804,11 @@ namespace battleutils
             if (isRanged)
             {
                 attackType = ATTACK_RANGED;
-                damage = RangedDmgTaken(PDefender, damage, damageType);
+                damage = RangedDmgTaken(PDefender, damage, damageType, isCovered);
             }
             else
             {
-                damage = PhysicalDmgTaken(PDefender, damage, damageType);
+                damage = PhysicalDmgTaken(PDefender, damage, damageType, isCovered);
             }
 
             //absorb mods are handled in the above functions, but they do not affect counters
@@ -4254,7 +4254,7 @@ namespace battleutils
         return damage;
     }
 
-    int32 PhysicalDmgTaken(CBattleEntity* PDefender, int32 damage, int16 damageType)
+    int32 PhysicalDmgTaken(CBattleEntity* PDefender, int32 damage, int16 damageType, bool IsCovered)
     {
         float resist = 1.f + PDefender->getMod(Mod::UDMGPHYS) / 100.f;
         resist = std::max(resist, 0.f);
@@ -4279,7 +4279,10 @@ namespace battleutils
         else
         {
             damage = HandleSevereDamage(PDefender, damage, true);
-            int16 absorbedMP = (int16)(damage * (PDefender->getMod(Mod::ABSORB_DMG_TO_MP) + PDefender->getMod(Mod::ABSORB_PHYSDMG_TO_MP)) / 100);
+            int16 coverAbsorb = 0;
+            if (IsCovered) coverAbsorb = PDefender->StatusEffectContainer->GetStatusEffect(EFFECT_COVER)->GetPower();
+            
+            int16 absorbedMP = (int16)(damage * (PDefender->getMod(Mod::ABSORB_DMG_TO_MP) + PDefender->getMod(Mod::ABSORB_PHYSDMG_TO_MP) + coverAbsorb) / 100);
             if (absorbedMP > 0)
                 PDefender->addMP(absorbedMP);
             damage = HandleFanDance(PDefender, damage);
@@ -4288,7 +4291,7 @@ namespace battleutils
         return damage;
     }
 
-    int32 RangedDmgTaken(CBattleEntity* PDefender, int32 damage, int16 damageType)
+    int32 RangedDmgTaken(CBattleEntity* PDefender, int32 damage, int16 damageType, bool IsCovered)
     {
         float resist = 1.0f + PDefender->getMod(Mod::UDMGRANGE) / 100.f;
         resist = std::max(resist, 0.f);
@@ -4314,7 +4317,10 @@ namespace battleutils
         else
         {
             damage = HandleSevereDamage(PDefender, damage, true);
-            int16 absorbedMP = (int16)(damage * (PDefender->getMod(Mod::ABSORB_DMG_TO_MP) + PDefender->getMod(Mod::ABSORB_PHYSDMG_TO_MP)) / 100);
+            int16 coverAbsorb = 0;
+            if (IsCovered) coverAbsorb = PDefender->StatusEffectContainer->GetStatusEffect(EFFECT_COVER)->GetPower();
+            
+            int16 absorbedMP = (int16)(damage * (PDefender->getMod(Mod::ABSORB_DMG_TO_MP) + PDefender->getMod(Mod::ABSORB_PHYSDMG_TO_MP) + coverAbsorb) / 100);
             if (absorbedMP > 0)
                 PDefender->addMP(absorbedMP);
             damage = HandleFanDance(PDefender, damage);
@@ -5753,25 +5759,31 @@ namespace battleutils
         return false;
     }
 
-/*    int32 HandleCoverAbsorb(CCharEntity* target, damage)
+   /* int32 HandleCoverAbsorb(CCharEntity* target, damage)
     {
-        CItem* body  = target->getEquip(SLOT_BODY);
-        int32 bodyID     = body->getID();
-        int32 absorb = 0;
-
-        if (target != nullptr)
+        if (target != nullptr && damage > 0)
         {
-            switch(id) {
-                case 15093: absorb = 20 // Valor Surcoat
-                case 14506: absorb = 20 // Valor Surcoat +1
-                case 10676: absorb = 30 // Valor Surcoat +2
-                case 26812: absorb = 32 // Caballarius Surcoat
-                case 26813: absorb = 35 // Caballarius Surcoat +1
-                case 23136: absorb = 38 // Caballarius Surcoat +2
-                case 23471: absorb = 41 // Caballarius Surcoat +3
+            CItem* body  = target->getEquip(SLOT_BODY);
+            if (body != nullptr)
+            {        
+                int32 bodyID = body->getID();
+                int32 absorb = 0;
+                if (bodyID != nullptr)
+                {
+                    switch(id) {
+                        case 15093: absorb = 20 // Valor Surcoat
+                        case 14506: absorb = 20 // Valor Surcoat +1
+                        case 10676: absorb = 30 // Valor Surcoat +2
+                        case 26812: absorb = 32 // Caballarius Surcoat
+                        case 26813: absorb = 35 // Caballarius Surcoat +1
+                        case 23136: absorb = 38 // Caballarius Surcoat +2
+                        case 23471: absorb = 41 // Caballarius Surcoat +3
+                    }
+
+                    return damage * (absorb / 100);
+                }
+                
             }
         }
-        return damage;
-
     }*/
 };
