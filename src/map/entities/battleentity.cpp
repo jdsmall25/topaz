@@ -1386,7 +1386,7 @@ void CBattleEntity::OnCastFinished(CMagicState& state, action_t& action)
         
         if (PCoverTarget != nullptr && this->objtype == TYPE_MOB)
         {
-            ShowDebug("Attempting to apply Magic Cover Enmity.\n")
+            ShowDebug("Attempting to apply Magic Cover Enmity.\n");
             state.ApplyMagicCoverEnmity(POriginalTarget, PTarget, this);
         }
         else
