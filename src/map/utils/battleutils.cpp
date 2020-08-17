@@ -5705,7 +5705,8 @@ namespace battleutils
                     minSlope = (minZpoint - covereeZ) / (minXpoint - covereeX);
                 }
 
-                if (distance(coverTarget->loc.p, PMob->loc.p) <= distance(coveree->loc.p, PMob->loc.p))
+                if (distance(coverTarget->loc.p >= PMob->GetMeleeRange()) &&                    //make sure cover target is within melee range
+                   (coverTarget->loc.p, PMob->loc.p) <= distance(coveree->loc.p, PMob->loc.p))  //make sure cover target is close to the mob than coveree
                 {
                     float coverPartnerXdif = coverTarget->loc.p.x - covereeX;
                     float coverPartnerZdif = coverTarget->loc.p.z - covereeZ;
@@ -5769,7 +5770,7 @@ namespace battleutils
                     bodyID == 26812 || // Caballarius Surcoat
                     bodyID == 26813 || // Caballarius Surcoat +1
                     bodyID == 23136 || // Caballarius Surcoat +2
-                    bodyID == 23471 ){  // Caballarius Surcoat +3
+                    bodyID == 23471 ){ // Caballarius Surcoat +3
                 
                     ShowDebug("Cover is absorbed.\n");
                     return true;

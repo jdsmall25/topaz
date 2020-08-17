@@ -460,14 +460,14 @@ void CEnmityContainer::UpdateEnmityFromCover(CBattleEntity* PCoveree, CBattleEnt
     if (PCoveree != nullptr && PCoverTarget != nullptr)
     {
         int32 currentCE = GetCE(PCoverTarget);
-        ShowDebug("Current Emnity Target: %ld\n", currentCE);
+        ShowDebug("Current Enmity Target: %ld\n", currentCE);
         SetCE(PCoverTarget, currentCE + 200);
         LowerEnmityByPercent(PCoveree, 10, nullptr);
 
         int32 newTargetCE = CEnmityContainer::GetCE(PCoverTarget);
         int32 newCovereeCE = CEnmityContainer::GetCE(PCoveree);
 
-        ShowDebug("New Emnity Target: %ld\n", newTargetCE);
-        ShowDebug("New Emnity Coveree: %ld\n", newCovereeCE);
+        ShowDebug("New Enmity Target: %ld\n", newTargetCE);
+        ShowDebug("New Enmity Coveree: %ld\n", newCovereeCE);
     }
 }
