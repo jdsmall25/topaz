@@ -1387,7 +1387,7 @@ void CBattleEntity::OnCastFinished(CMagicState& state, action_t& action)
         if (IsMagicCovered)
         {
             ShowDebug("Attempting to apply Magic Cover Enmity.\n");
-            state.ApplyMagicCoverEnmity(POriginalTarget, PActionTarget, (CMobEntity*)this);
+            state.ApplyMagicCoverEnmity(POriginalTarget, PActionTarget, this);
         }
         else
         {
