@@ -4280,8 +4280,7 @@ namespace battleutils
         {
             damage = HandleSevereDamage(PDefender, damage, true);
             int16 coverAbsorb = 0;
-            if (IsCovered && IsCoverAbsorbed((CCharEntity*)PDefender)) coverAbsorb = PDefender->StatusEffectContainer->GetStatusEffect(EFFECT_COVER)->GetPower();
-            
+            if (IsCovered) coverAbsorb = GetCoverAbsorb((CCharEntity*)PDefender); // Make sure the attack is covered before applying ABSORB_PHYSDMG_T0_MP mod.
             int16 absorbedMP = (int16)(damage * (PDefender->getMod(Mod::ABSORB_DMG_TO_MP) + PDefender->getMod(Mod::ABSORB_PHYSDMG_TO_MP) + coverAbsorb) / 100);
             if (absorbedMP > 0)
                 PDefender->addMP(absorbedMP);
@@ -4318,8 +4317,7 @@ namespace battleutils
         {
             damage = HandleSevereDamage(PDefender, damage, true);
             int16 coverAbsorb = 0;
-            if (IsCovered) coverAbsorb = PDefender->StatusEffectContainer->GetStatusEffect(EFFECT_COVER)->GetPower();
-            
+            if (IsCovered) coverAbsorb = GetCoverAbsorb((CCharEntity*)PDefender); // Make sure the attack is covered before applying ABSORB_PHYSDMG_T0_MP mod.
             int16 absorbedMP = (int16)(damage * (PDefender->getMod(Mod::ABSORB_DMG_TO_MP) + PDefender->getMod(Mod::ABSORB_PHYSDMG_TO_MP) + coverAbsorb) / 100);
             if (absorbedMP > 0)
                 PDefender->addMP(absorbedMP);
@@ -5654,7 +5652,7 @@ namespace battleutils
                     coverTarget = member;
                     break;
                 }
-            }          
+            }
 
             if (coverTarget != nullptr)
             {
@@ -5709,7 +5707,7 @@ namespace battleutils
                 ShowDebug("Cover Target Distance: %f\n", targetDistance);
                 ShowDebug("Mob Attack Range: %u\n", PMob->GetMeleeRange());
 
-                if (distance(coverTarget->loc.p, PMob->loc.p) <= (float)PMob->GetMeleeRange() &&            //make sure cover target is within melee range
+                if (distance(coverTarget->loc.p, PMob->loc.p) <= (float)PMob->GetMeleeRange() &&       //make sure cover target is within melee range
                    distance(coverTarget->loc.p, PMob->loc.p) <= distance(coveree->loc.p, PMob->loc.p)) //make sure cover target is closer to the mob than coveree
                 {
                     float coverPartnerXdif = coverTarget->loc.p.x - covereeX;
@@ -5737,11 +5735,14 @@ namespace battleutils
 
     }
 
-    bool IsMagicCovered(CCharEntity* target) {
-        if (target != nullptr) {
+    bool IsMagicCovered(CCharEntity* target)
+    {
+        if (target != nullptr)
+        {
             CItem* head  = target->getEquip(SLOT_HEAD);
 
-            if (head != nullptr) {
+            if (head != nullptr)
+            {
                 int32 headID = head->getID();
                 ShowDebug("Head Item ID = %ld\n", headID);
             
@@ -5750,8 +5751,8 @@ namespace battleutils
                     headID == 27669 || // Reverence Coronet
                     headID == 27690 || // Reverence Coronet +1
                     headID == 23046 || // Reverence Coronet +2
-                    headID == 23381 ){ // Reverence Coronet +3
-                
+                    headID == 23381 )  // Reverence Coronet +3
+                {
                     ShowDebug("Magic is covered.\n");
                     return true;
                 }
@@ -5761,10 +5762,13 @@ namespace battleutils
         return false;
     }
 
-   bool IsCoverAbsorbed(CCharEntity* target) {
-        if (target != nullptr) {
+    int16 GetCoverAbsorb(CCharEntity* target)
+    {
+        if (target != nullptr)
+        {
             CItem* body  = target->getEquip(SLOT_BODY);
-            if (body != nullptr) {        
+            if (body != nullptr)
+            {
                 int32 bodyID = body->getID();
                 ShowDebug("Body Item ID = %ld\n", bodyID);
 
@@ -5774,14 +5778,14 @@ namespace battleutils
                     bodyID == 26812 || // Caballarius Surcoat
                     bodyID == 26813 || // Caballarius Surcoat +1
                     bodyID == 23136 || // Caballarius Surcoat +2
-                    bodyID == 23471 ){ // Caballarius Surcoat +3
-                
+                    bodyID == 23471 )  // Caballarius Surcoat +3
+                {
                     ShowDebug("Cover is absorbed.\n");
-                    return true;
+                    return target->StatusEffectContainer->GetStatusEffect(EFFECT_COVER)->GetPower();
                 }
             }
         }
         ShowDebug("Cover is NOT absorbed.\n");
-        return false;
+        return 0;
     }
 };

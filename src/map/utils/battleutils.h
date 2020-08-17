@@ -249,7 +249,7 @@ namespace battleutils
 
     CBattleEntity*      GetCoverTarget(CBattleEntity* coveree, CBattleEntity* PMob);
     bool                IsMagicCovered(CCharEntity* target);
-    bool                IsCoverAbsorbed(CCharEntity* target);
+    int16               GetCoverAbsorb(CCharEntity* target);
 };
 
 #endif
