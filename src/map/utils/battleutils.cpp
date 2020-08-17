@@ -5704,7 +5704,10 @@ namespace battleutils
                     maxSlope = (maxZpoint - covereeZ) / (maxXpoint - covereeX);
                     minSlope = (minZpoint - covereeZ) / (minXpoint - covereeX);
                 }
-
+                
+                float targetDistance = distance(coverTarget->loc.p, PMob->loc.p);
+                ShowDebug("Cover Target Distance: %f\n", targetDistance);
+                ShowDebug("Mob Attack Range: %u\n", PMob->GetMeleeRange());
 
                 if (distance(coverTarget->loc.p, PMob->loc.p) <= (float)PMob->GetMeleeRange() &&            //make sure cover target is within melee range
                    distance(coverTarget->loc.p, PMob->loc.p) <= distance(coveree->loc.p, PMob->loc.p)) //make sure cover target is closer to the mob than coveree
