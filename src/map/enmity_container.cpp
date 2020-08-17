@@ -456,7 +456,7 @@ bool CEnmityContainer::IsTameable()
 void CEnmityContainer::UpdateEnmityFromCover(CBattleEntity* PCoveree, CBattleEntity* PCoverTarget)
 {
     // Update Enmity if Coveree and CoverTarget are not nullptr
-     ShowDebug("Entered UpdateEnmityFromCover Function");
+     ShowDebug("Entered UpdateEnmityFromCover Function\n");
     if (PCoveree != nullptr && PCoverTarget != nullptr)
     {
         int32 currentCE = GetCE(PCoverTarget);

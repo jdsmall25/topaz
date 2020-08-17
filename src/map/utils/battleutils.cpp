@@ -4280,7 +4280,7 @@ namespace battleutils
         {
             damage = HandleSevereDamage(PDefender, damage, true);
             int16 coverAbsorb = 0;
-            if (IsCovered) coverAbsorb = PDefender->StatusEffectContainer->GetStatusEffect(EFFECT_COVER)->GetPower();
+            if (IsCovered && IsCoverAbsorbed((CCharEntity*)PDefender)) coverAbsorb = PDefender->StatusEffectContainer->GetStatusEffect(EFFECT_COVER)->GetPower();
             
             int16 absorbedMP = (int16)(damage * (PDefender->getMod(Mod::ABSORB_DMG_TO_MP) + PDefender->getMod(Mod::ABSORB_PHYSDMG_TO_MP) + coverAbsorb) / 100);
             if (absorbedMP > 0)
@@ -5732,14 +5732,11 @@ namespace battleutils
 
     }
 
-    bool IsMagicCovered(CCharEntity* target)
-    {
-        if (target != nullptr)
-        {
+    bool IsMagicCovered(CCharEntity* target) {
+        if (target != nullptr) {
             CItem* head  = target->getEquip(SLOT_HEAD);
 
-            if (head != nullptr)
-            {
+            if (head != nullptr) {
                 int32 headID = head->getID();
                 ShowDebug("Head Item ID = %ld\n", headID);
             
@@ -5748,8 +5745,8 @@ namespace battleutils
                     headID == 27669 || // Reverence Coronet
                     headID == 27690 || // Reverence Coronet +1
                     headID == 23046 || // Reverence Coronet +2
-                    headID == 23381 )  // Reverence Coronet +3
-                {   
+                    headID == 23381 ){ // Reverence Coronet +3
+                
                     ShowDebug("Magic is covered.\n");
                     return true;
                 }
@@ -5759,31 +5756,27 @@ namespace battleutils
         return false;
     }
 
-   /* int32 HandleCoverAbsorb(CCharEntity* target, damage)
-    {
-        if (target != nullptr && damage > 0)
-        {
+   bool IsCoverAbsorbed(CCharEntity* target) {
+        if (target != nullptr) {
             CItem* body  = target->getEquip(SLOT_BODY);
-            if (body != nullptr)
-            {        
+            if (body != nullptr) {        
                 int32 bodyID = body->getID();
-                int32 absorb = 0;
-                if (bodyID != nullptr)
-                {
-                    switch(id) {
-                        case 15093: absorb = 20 // Valor Surcoat
-                        case 14506: absorb = 20 // Valor Surcoat +1
-                        case 10676: absorb = 30 // Valor Surcoat +2
-                        case 26812: absorb = 32 // Caballarius Surcoat
-                        case 26813: absorb = 35 // Caballarius Surcoat +1
-                        case 23136: absorb = 38 // Caballarius Surcoat +2
-                        case 23471: absorb = 41 // Caballarius Surcoat +3
-                    }
+                ShowDebug("Body Item ID = %ld\n", bodyID);
 
-                    return damage * (absorb / 100);
-                }
+                if (bodyID == 15093 || // Valor Surcoat
+                    bodyID == 14506 || // Valor Surcoat +1
+                    bodyID == 10676 || // Valor Surcoat +2
+                    bodyID == 26812 || // Caballarius Surcoat
+                    bodyID == 26813 || // Caballarius Surcoat +1
+                    bodyID == 23136 || // Caballarius Surcoat +2
+                    bodyID == 23471 ){  // Caballarius Surcoat +3
                 
+                    ShowDebug("Cover is absorbed.\n");
+                    return true;
+                }
             }
         }
-    }*/
+        ShowDebug("Cover is NOT absorbed.\n");
+        return false;
+    }
 };

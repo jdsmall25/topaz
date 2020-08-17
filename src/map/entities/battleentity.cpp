@@ -1236,6 +1236,7 @@ void CBattleEntity::OnCastFinished(CMagicState& state, action_t& action)
     auto PActionTarget = static_cast<CBattleEntity*>(state.GetTarget());
     CBattleEntity* POriginalTarget = PActionTarget;
     CBattleEntity* PCoverTarget = nullptr;
+    bool IsMagicCovered= false;
 
     luautils::OnSpellPrecast(this, PSpell);
 
@@ -1286,7 +1287,7 @@ void CBattleEntity::OnCastFinished(CMagicState& state, action_t& action)
         {
             ShowDebug("Getting a magic Cover Target.\n");
             CBattleEntity* PCoverTarget = battleutils::GetCoverTarget(PActionTarget, this);
-            bool IsMagicCovered = battleutils::IsMagicCovered((CCharEntity*) PCoverTarget);
+            IsMagicCovered = battleutils::IsMagicCovered((CCharEntity*) PCoverTarget);
 
             if (IsMagicCovered)
             {
@@ -1384,7 +1385,7 @@ void CBattleEntity::OnCastFinished(CMagicState& state, action_t& action)
         }
         actionTarget.messageID = msg;
         
-        if (PCoverTarget != nullptr && this->objtype == TYPE_MOB)
+        if (IsMagicCovered)
         {
             ShowDebug("Attempting to apply Magic Cover Enmity.\n");
             state.ApplyMagicCoverEnmity(POriginalTarget, PTarget, this);
