@@ -5706,7 +5706,7 @@ namespace battleutils
                 }
 
 
-                if (distance((coverTarget->loc.p, PMob->loc.p) >= PMob->GetMeleeRange()) &&            //make sure cover target is within melee range
+                if (distance(coverTarget->loc.p, PMob->loc.p) <= (float)PMob->GetMeleeRange() &&            //make sure cover target is within melee range
                    distance(coverTarget->loc.p, PMob->loc.p) <= distance(coveree->loc.p, PMob->loc.p)) //make sure cover target is closer to the mob than coveree
                 {
                     float coverPartnerXdif = coverTarget->loc.p.x - covereeX;
