@@ -1235,7 +1235,6 @@ void CBattleEntity::OnCastFinished(CMagicState& state, action_t& action)
     auto PSpell = state.GetSpell();
     auto PActionTarget = static_cast<CBattleEntity*>(state.GetTarget());
     CBattleEntity* POriginalTarget = PActionTarget;
-    CBattleEntity* PCoverTarget = nullptr;
     bool IsMagicCovered= false;
 
     luautils::OnSpellPrecast(this, PSpell);
