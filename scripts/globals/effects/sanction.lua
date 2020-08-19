@@ -6,7 +6,7 @@
 require("scripts/globals/status")
 -----------------------------------
 
-function onEffectGain(target,effect)
+function onEffectGain(target, effect)
     -- target:addLatent(tpz.latent.SANCTION_EXP, ?, tpz.mod.EXP_BONUS, ?)
     -- Possibly handle exp bonus in core instead
 
@@ -29,10 +29,10 @@ function onEffectGain(target,effect)
     
 end
 
-function onEffectTick(target,effect)
+function onEffectTick(target, effect)
 end
 
-function onEffectLose(target,effect)
+function onEffectLose(target, effect)
     -- target:delLatent(tpz.latent.SANCTION_EXP, ?, tpz.mod.EXP_BONUS, ?)
 
     local power = effect:getPower()
