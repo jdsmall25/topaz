@@ -26,6 +26,8 @@
 
 #include <math.h>
 
+#include "../map.h"
+
 #include "../packets/message_basic.h"
 #include "../packets/char_stats.h"
 #include "../packets/char_health.h"
