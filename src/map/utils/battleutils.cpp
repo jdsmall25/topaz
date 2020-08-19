@@ -4280,7 +4280,7 @@ namespace battleutils
         {
             damage = HandleSevereDamage(PDefender, damage, true);
             int16 coverAbsorb = 0;
-            if (IsCovered) coverAbsorb = GetCoverAbsorb((CCharEntity*)PDefender); // Make sure the attack is covered before applying ABSORB_PHYSDMG_T0_MP mod.
+            if (IsCovered) coverAbsorb = GetCoverAbsorb((CCharEntity*)PDefender); // Make sure the attack is covered and proper gear is equipped.
             int16 absorbedMP = (int16)(damage * (PDefender->getMod(Mod::ABSORB_DMG_TO_MP) + PDefender->getMod(Mod::ABSORB_PHYSDMG_TO_MP) + coverAbsorb) / 100);
             if (absorbedMP > 0)
                 PDefender->addMP(absorbedMP);
@@ -4317,7 +4317,7 @@ namespace battleutils
         {
             damage = HandleSevereDamage(PDefender, damage, true);
             int16 coverAbsorb = 0;
-            if (IsCovered) coverAbsorb = GetCoverAbsorb((CCharEntity*)PDefender); // Make sure the attack is covered before applying ABSORB_PHYSDMG_T0_MP mod.
+            if (IsCovered) coverAbsorb = GetCoverAbsorb((CCharEntity*)PDefender); // Make sure the attack is covered and proper gear is equipped.
             int16 absorbedMP = (int16)(damage * (PDefender->getMod(Mod::ABSORB_DMG_TO_MP) + PDefender->getMod(Mod::ABSORB_PHYSDMG_TO_MP) + coverAbsorb) / 100);
             if (absorbedMP > 0)
                 PDefender->addMP(absorbedMP);

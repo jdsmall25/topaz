@@ -1288,7 +1288,7 @@ void CBattleEntity::OnCastFinished(CMagicState& state, action_t& action)
             CBattleEntity* PCoverTarget = battleutils::GetCoverTarget(PActionTarget, this);
             IsMagicCovered = battleutils::IsMagicCovered((CCharEntity*) PCoverTarget);
 
-            if (IsMagicCovered)
+            if (IsMagicCovered) // check for proper head gear
             {
                 PActionTarget = PCoverTarget;
             }
