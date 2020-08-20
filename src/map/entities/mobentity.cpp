@@ -611,6 +611,16 @@ void CMobEntity::OnMobSkillFinished(CMobSkillState& state, action_t& action)
         }
         else
         {
+            if (this->objtype == TYPE_MOB && PTarget->objtype == TYPE_PC)
+            {
+                ShowDebug("Getting an ability Cover Target.\n");
+                CBattleEntity* PCoverTarget = battleutils::GetCoverTarget(PTarget, this);
+                if (PCoverTarget != nullptr)
+                {
+                    PTarget = PCoverTarget;
+                }
+            }
+
             PAI->TargetFind->findSingleTarget(PTarget, findFlags);
         }
     }
@@ -918,7 +928,7 @@ void CMobEntity::DropItems(CCharEntity* PChar)
         // Wiki's have conflicting info on mob lv required for Geodes. One says 50 the other 75. I think 50 is correct.
 
         uint8 effect = 0; // Begin Adding Crystals
-        
+
         if (m_Element > 0)
         {
             uint8 regionID = PChar->loc.zone->GetRegionID();

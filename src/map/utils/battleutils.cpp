@@ -1778,7 +1778,7 @@ namespace battleutils
     *                                                                       *
     ************************************************************************/
 
-    int32 TakePhysicalDamage(CBattleEntity* PAttacker, CBattleEntity* PDefender, PHYSICAL_ATTACK_TYPE physicalAttackType, int32 damage, bool isBlocked, uint8 slot, uint16 tpMultiplier, CBattleEntity* taChar, bool giveTPtoVictim, bool giveTPtoAttacker, bool isCounter)
+    int32 TakePhysicalDamage(CBattleEntity* PAttacker, CBattleEntity* PDefender, PHYSICAL_ATTACK_TYPE physicalAttackType, int32 damage, bool isBlocked, uint8 slot, uint16 tpMultiplier, CBattleEntity* taChar, bool giveTPtoVictim, bool giveTPtoAttacker, bool isCounter, bool isCovered, CBattleEntity* POriginalTarget)
     {
         auto weapon = GetEntityWeapon(PAttacker, (SLOTTYPE)slot);
         giveTPtoAttacker = giveTPtoAttacker && !PAttacker->StatusEffectContainer->HasStatusEffect(EFFECT_MEIKYO_SHISUI);
@@ -1808,11 +1808,11 @@ namespace battleutils
             if (isRanged)
             {
                 attackType = ATTACK_RANGED;
-                damage = RangedDmgTaken(PDefender, damage, damageType);
+                damage = RangedDmgTaken(PDefender, damage, damageType, isCovered);
             }
             else
             {
-                damage = PhysicalDmgTaken(PDefender, damage, damageType);
+                damage = PhysicalDmgTaken(PDefender, damage, damageType, isCovered);
             }
 
             //absorb mods are handled in the above functions, but they do not affect counters
@@ -1892,6 +1892,7 @@ namespace battleutils
 
                 damage = (damage * absorb) / 100;
             }
+
         }
         if (damage > 0)
         {
@@ -1900,6 +1901,7 @@ namespace battleutils
             damage = HandleStoneskin(PDefender, damage);
             HandleAfflatusMiseryDamage(PDefender, damage);
         }
+
         damage = std::clamp(damage, -99999, 99999);
 
         int32 corrected = PDefender->takeDamage(damage, PAttacker, attackType, damageType);
@@ -1940,7 +1942,10 @@ namespace battleutils
                 case TYPE_PC:
                     if (PAttacker->objtype == TYPE_MOB)
                     {
-                        ((CMobEntity*)PAttacker)->PEnmityContainer->UpdateEnmityFromAttack(PDefender, damage);
+                        if (isCovered)
+                            ((CMobEntity*)PAttacker)->PEnmityContainer->UpdateEnmityFromCover(POriginalTarget, PDefender);
+                        else
+                            ((CMobEntity*)PAttacker)->PEnmityContainer->UpdateEnmityFromAttack(PDefender, damage);
                     }
                     break;
                 default:
@@ -2015,6 +2020,7 @@ namespace battleutils
             PAttacker->StatusEffectContainer->DelStatusEffectsByFlag(EFFECTFLAG_ATTACK);
 
         return damage;
+
     }
 
     /************************************************************************
@@ -4252,7 +4258,7 @@ namespace battleutils
         return damage;
     }
 
-    int32 PhysicalDmgTaken(CBattleEntity* PDefender, int32 damage, int16 damageType)
+    int32 PhysicalDmgTaken(CBattleEntity* PDefender, int32 damage, int16 damageType, bool IsCovered)
     {
         float resist = 1.f + PDefender->getMod(Mod::UDMGPHYS) / 100.f;
         resist = std::max(resist, 0.f);
@@ -4277,7 +4283,9 @@ namespace battleutils
         else
         {
             damage = HandleSevereDamage(PDefender, damage, true);
-            int16 absorbedMP = (int16)(damage * (PDefender->getMod(Mod::ABSORB_DMG_TO_MP) + PDefender->getMod(Mod::ABSORB_PHYSDMG_TO_MP)) / 100);
+            int16 coverAbsorb = 0;
+            if (IsCovered) coverAbsorb = GetCoverAbsorb((CCharEntity*)PDefender); // Make sure the attack is covered and proper gear is equipped.
+            int16 absorbedMP = (int16)(damage * (PDefender->getMod(Mod::ABSORB_DMG_TO_MP) + PDefender->getMod(Mod::ABSORB_PHYSDMG_TO_MP) + coverAbsorb) / 100);
             if (absorbedMP > 0)
                 PDefender->addMP(absorbedMP);
             damage = HandleFanDance(PDefender, damage);
@@ -4286,7 +4294,7 @@ namespace battleutils
         return damage;
     }
 
-    int32 RangedDmgTaken(CBattleEntity* PDefender, int32 damage, int16 damageType)
+    int32 RangedDmgTaken(CBattleEntity* PDefender, int32 damage, int16 damageType, bool IsCovered)
     {
         float resist = 1.0f + PDefender->getMod(Mod::UDMGRANGE) / 100.f;
         resist = std::max(resist, 0.f);
@@ -4312,7 +4320,9 @@ namespace battleutils
         else
         {
             damage = HandleSevereDamage(PDefender, damage, true);
-            int16 absorbedMP = (int16)(damage * (PDefender->getMod(Mod::ABSORB_DMG_TO_MP) + PDefender->getMod(Mod::ABSORB_PHYSDMG_TO_MP)) / 100);
+            int16 coverAbsorb = 0;
+            if (IsCovered) coverAbsorb = GetCoverAbsorb((CCharEntity*)PDefender); // Make sure the attack is covered and proper gear is equipped.
+            int16 absorbedMP = (int16)(damage * (PDefender->getMod(Mod::ABSORB_DMG_TO_MP) + PDefender->getMod(Mod::ABSORB_PHYSDMG_TO_MP) + coverAbsorb) / 100);
             if (absorbedMP > 0)
                 PDefender->addMP(absorbedMP);
             damage = HandleFanDance(PDefender, damage);
@@ -5623,5 +5633,163 @@ namespace battleutils
             default:
                 return DAMAGE_NONE;
         }
+    }
+
+    CBattleEntity* GetCoverTarget(CBattleEntity* coveree, CBattleEntity* PMob)
+    {
+        CBattleEntity* coverTarget = nullptr;
+        uint32 covereeID           = coveree->id;
+        
+        ShowDebug("Coveree ID: %ld\n", covereeID);
+
+        //If the coveree is in a party, find a cover target
+        if (coveree->PParty != nullptr)
+        {            
+            for (uint8 i = 0; i < coveree->PParty->members.size(); ++i)
+            {
+                CBattleEntity* member = coveree->PParty->members.at(i);
+
+                if (covereeID == member->GetLocalVar("COVER_PARTNER") &&
+                    member->StatusEffectContainer->HasStatusEffect(EFFECT_COVER) &&
+                    member->isAlive())
+                {
+                    coverTarget = member;
+                    break;
+                }
+            }
+
+            if (coverTarget != nullptr)
+            {
+                float covereeX  = coveree->loc.p.x;
+                float covereeZ  = coveree->loc.p.z;
+                float mobX      = PMob->loc.p.x;
+                float mobZ      = PMob->loc.p.z;
+
+                float xdif      = covereeX - mobX;
+                float zdif      = covereeZ - mobZ;
+                float slope     = 0;
+                float maxSlope  = 0;
+                float minSlope  = 0;
+                bool zDependent = true; //using a slope where z is dependent var
+
+                if (abs(xdif) <= abs(zdif))
+                {
+                    slope = xdif / zdif;
+
+
+                    float angle = (float)atan((double)1) * 2 - atan(slope);
+
+                    float zoffset   = cos(angle) / 2;
+                    float xoffset   = sin(angle) / 2;
+                    float maxXpoint = mobX + xoffset;
+                    float maxZpoint = mobZ - zoffset;
+                    float minXpoint = mobX - xoffset;
+                    float minZpoint = mobZ + zoffset;
+
+                    maxSlope = ((maxXpoint - covereeX) / (maxZpoint - covereeZ));
+                    minSlope = ((minXpoint - covereeX) / (minZpoint - covereeZ));
+
+                    zDependent = false;
+                }
+                else {
+                    slope = zdif / xdif;
+
+                    float angle = (float)atan((double)1) * 2 - atan(slope);
+
+                    float xoffset   = cos(angle) / 2;
+                    float zoffset   = sin(angle) / 2;
+                    float maxXpoint = mobX - xoffset;
+                    float maxZpoint = mobZ + zoffset;
+                    float minXpoint = mobX + xoffset;
+                    float minZpoint = mobZ - zoffset;
+
+                    maxSlope = (maxZpoint - covereeZ) / (maxXpoint - covereeX);
+                    minSlope = (minZpoint - covereeZ) / (minXpoint - covereeX);
+                }
+                
+                float targetDistance = distance(coverTarget->loc.p, PMob->loc.p);
+                ShowDebug("Cover Target Distance: %f\n", targetDistance);
+                ShowDebug("Mob Attack Range: %u\n", PMob->GetMeleeRange());
+
+                if (distance(coverTarget->loc.p, PMob->loc.p) <= (float)PMob->GetMeleeRange() &&       //make sure cover target is within melee range
+                   distance(coverTarget->loc.p, PMob->loc.p) <= distance(coveree->loc.p, PMob->loc.p)) //make sure cover target is closer to the mob than coveree
+                {
+                    float coverPartnerXdif = coverTarget->loc.p.x - covereeX;
+                    float coverPartnerZdif = coverTarget->loc.p.z - covereeZ;
+                    if (zDependent)
+                    {
+                        if ((coverPartnerZdif <= coverPartnerXdif * maxSlope) &&
+                            (coverPartnerZdif >= coverPartnerXdif * minSlope))
+                        {
+                            return coverTarget;
+                        }
+                    }
+                    else {
+                        if ((coverPartnerXdif <= coverPartnerZdif * maxSlope) &&
+                            (coverPartnerXdif >= coverPartnerZdif * minSlope))
+                        {
+                            return coverTarget;
+                        }
+                    }
+                }
+            }
+        }
+        ShowDebug("No Cover Target found, returning nullptr\n");
+        return nullptr;
+
+    }
+
+    bool IsMagicCovered(CCharEntity* target)
+    {
+        if (target != nullptr)
+        {
+            CItem* head  = target->getEquip(SLOT_HEAD);
+
+            if (head != nullptr)
+            {
+                int32 headID = head->getID();
+                ShowDebug("Head Item ID = %ld\n", headID);
+            
+                if (headID == 12515 || // Gallant Coronet
+                    headID == 15231 || // Gallant Coronet +1
+                    headID == 27669 || // Reverence Coronet
+                    headID == 27690 || // Reverence Coronet +1
+                    headID == 23046 || // Reverence Coronet +2
+                    headID == 23381 )  // Reverence Coronet +3
+                {
+                    ShowDebug("Magic is covered.\n");
+                    return true;
+                }
+            }
+        }
+        ShowDebug("Magic is NOT covered.\n");
+        return false;
+    }
+
+    int16 GetCoverAbsorb(CCharEntity* target)
+    {
+        if (target != nullptr)
+        {
+            CItem* body  = target->getEquip(SLOT_BODY);
+            if (body != nullptr)
+            {
+                int32 bodyID = body->getID();
+                ShowDebug("Body Item ID = %ld\n", bodyID);
+
+                if (bodyID == 15093 || // Valor Surcoat
+                    bodyID == 14506 || // Valor Surcoat +1
+                    bodyID == 10676 || // Valor Surcoat +2
+                    bodyID == 26812 || // Caballarius Surcoat
+                    bodyID == 26813 || // Caballarius Surcoat +1
+                    bodyID == 23136 || // Caballarius Surcoat +2
+                    bodyID == 23471 )  // Caballarius Surcoat +3
+                {
+                    ShowDebug("Cover is absorbed.\n");
+                    return target->StatusEffectContainer->GetStatusEffect(EFFECT_COVER)->GetPower();
+                }
+            }
+        }
+        ShowDebug("Cover is NOT absorbed.\n");
+        return 0;
     }
 };

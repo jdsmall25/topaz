@@ -446,6 +446,24 @@ bool CAttack::CheckCounter()
     return m_isCountered;
 }
 
+bool CAttack::IsCovered()
+{
+    return m_isCovered;
+}
+
+bool CAttack::CheckCover()
+{
+    if (m_attackRound->GetCoverEntity() != nullptr && (m_attackRound->GetCoverEntity()->isAlive()))
+    {
+        m_isCovered = true;
+    }
+    else {
+        m_isCovered = false;
+    }
+
+    return m_isCovered;
+}
+
 /************************************************************************
 *																		*
 *  Processes the damage for this swing.									*

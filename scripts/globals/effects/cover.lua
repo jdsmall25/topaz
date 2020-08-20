@@ -1,6 +1,6 @@
 -----------------------------------
 --
---
+--  tpz.mod.COVER_EFFECT
 --
 -----------------------------------
 
@@ -10,5 +10,6 @@ end
 function onEffectTick(target, effect)
 end
 
-function onEffectLose(target, effect)
+function onEffectLose(target,effect)
+    target:setLocalVar("COVER_PARTNER", 0)
 end
