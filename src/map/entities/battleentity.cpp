@@ -1687,7 +1687,6 @@ bool CBattleEntity::OnAttack(CAttackState& state, action_t& action)
                     charutils::TrySkillUP((CCharEntity*)PTarget, SKILL_EVASION, GetMLevel());
                 }
             }
-
         }
         else
         {
