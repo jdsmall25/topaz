@@ -1015,6 +1015,7 @@ int32 map_config_default()
     map_config.skillup_bloodpact = true;
     map_config.anticheat_enabled = false;
     map_config.anticheat_jail_disable = false;
+    map_config.blue_spell_learn_chance = 0;
     return 0;
 }
 
