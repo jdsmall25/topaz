@@ -5639,8 +5639,6 @@ namespace battleutils
     {
         CBattleEntity* coverTarget = nullptr;
         uint32 covereeID           = coveree->id;
-        
-        ShowDebug("Coveree ID: %ld\n", covereeID);
 
         //If the coveree is in a party, find a cover target
         if (coveree->PParty != nullptr)
@@ -5708,8 +5706,6 @@ namespace battleutils
                 }
                 
                 float targetDistance = distance(coverTarget->loc.p, PMob->loc.p);
-                ShowDebug("Cover Target Distance: %f\n", targetDistance);
-                ShowDebug("Mob Attack Range: %u\n", PMob->GetMeleeRange());
 
                 if (distance(coverTarget->loc.p, PMob->loc.p) <= (float)PMob->GetMeleeRange() &&       //make sure cover target is within melee range
                    distance(coverTarget->loc.p, PMob->loc.p) <= distance(coveree->loc.p, PMob->loc.p)) //make sure cover target is closer to the mob than coveree
@@ -5734,7 +5730,6 @@ namespace battleutils
                 }
             }
         }
-        ShowDebug("No Cover Target found, returning nullptr\n");
         return nullptr;
 
     }
@@ -5748,7 +5743,6 @@ namespace battleutils
             if (head != nullptr)
             {
                 int32 headID = head->getID();
-                ShowDebug("Head Item ID = %ld\n", headID);
             
                 if (headID == 12515 || // Gallant Coronet
                     headID == 15231 || // Gallant Coronet +1
@@ -5757,12 +5751,10 @@ namespace battleutils
                     headID == 23046 || // Reverence Coronet +2
                     headID == 23381 )  // Reverence Coronet +3
                 {
-                    ShowDebug("Magic is covered.\n");
                     return true;
                 }
             }
         }
-        ShowDebug("Magic is NOT covered.\n");
         return false;
     }
 
@@ -5774,7 +5766,6 @@ namespace battleutils
             if (body != nullptr)
             {
                 int32 bodyID = body->getID();
-                ShowDebug("Body Item ID = %ld\n", bodyID);
 
                 if (bodyID == 15093 || // Valor Surcoat
                     bodyID == 14506 || // Valor Surcoat +1
@@ -5784,12 +5775,10 @@ namespace battleutils
                     bodyID == 23136 || // Caballarius Surcoat +2
                     bodyID == 23471 )  // Caballarius Surcoat +3
                 {
-                    ShowDebug("Cover is absorbed.\n");
                     return target->StatusEffectContainer->GetStatusEffect(EFFECT_COVER)->GetPower();
                 }
             }
         }
-        ShowDebug("Cover is NOT absorbed.\n");
         return 0;
     }
 };

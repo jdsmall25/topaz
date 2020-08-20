@@ -1284,7 +1284,6 @@ void CBattleEntity::OnCastFinished(CMagicState& state, action_t& action)
     {
         if (this->objtype == TYPE_MOB && PActionTarget->objtype == TYPE_PC)
         {
-            ShowDebug("Getting a magic Cover Target.\n");
             CBattleEntity* PCoverTarget = battleutils::GetCoverTarget(PActionTarget, this);
             IsMagicCovered = battleutils::IsMagicCovered((CCharEntity*) PCoverTarget);
 
@@ -1386,7 +1385,6 @@ void CBattleEntity::OnCastFinished(CMagicState& state, action_t& action)
         
         if (IsMagicCovered)
         {
-            ShowDebug("Attempting to apply Magic Cover Enmity.\n");
             state.ApplyMagicCoverEnmity(POriginalTarget, PActionTarget, (CMobEntity*)this);
         }
         else
