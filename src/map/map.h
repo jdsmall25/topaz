@@ -139,6 +139,7 @@ struct map_config_t
     bool   skillup_bloodpact;         // Enable/disable skillups for bloodpacts
     bool   anticheat_enabled;         // Is the anti-cheating system enabled
     bool   anticheat_jail_disable;    // Globally disable auto-jailing by the anti-cheat system
+    int16  blue_spell_learn_chance;   // Increase chance to learn blue spells.
 };
 
 /************************************************************************

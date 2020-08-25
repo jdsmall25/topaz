@@ -1015,6 +1015,7 @@ int32 map_config_default()
     map_config.skillup_bloodpact = true;
     map_config.anticheat_enabled = false;
     map_config.anticheat_jail_disable = false;
+    map_config.blue_spell_learn_chance = 0;
     return 0;
 }
 
@@ -1371,6 +1372,10 @@ int32 map_config_read(const int8* cfgName)
         else if (strcmp(w1, "anticheat_jail_disable") == 0)
         {
             map_config.anticheat_jail_disable = atoi(w2);
+        }
+        else if (strcmp(w1, "blue_spell_learn_chance") == 0)
+        {
+            map_config.blue_spell_learn_chance = atoi(w2);
         }
         else
         {
