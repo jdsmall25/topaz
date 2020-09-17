@@ -60,7 +60,7 @@ ALL_MAPS = 1 -- Set to 1 to give starting characters all the maps.
 UNLOCK_OUTPOST_WARPS = 2 -- Set to 1 to give starting characters all outpost warps.  2 to add Tu'Lia and Tavnazia.
 
 SHOP_PRICE      = 1.000 -- Multiplies prices in NPC shops.
-GIL_RATE        = 100.000 -- Multiplies gil earned from quests.  Won't always display in game.
+GIL_RATE        = 10.000 -- Multiplies gil earned from quests.  Won't always display in game.
 BAYLD_RATE      = 1.000 -- Multiples bayld earned from quests.
 EXP_RATE        = 1.000 -- Multiplies exp earned from fov and quests.
 TABS_RATE       = 1.000 -- Multiplies tabs earned from fov.
