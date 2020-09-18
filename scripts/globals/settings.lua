@@ -39,7 +39,7 @@ GOV_REWARD_ALLIANCE = 1 -- Allow Grounds of Valor rewards while being a member o
 -- Retail droprate = 0.1 (10%) with no other effects active
 -- Set to 0 to disable caskets.
 -- max is clamped to 1.0 (100%)
-CASKET_DROP_RATE = 0.1
+CASKET_DROP_RATE = 0
 
 -- Setting to lock content more accurately to the content you have defined above
 -- This generally results in a more accurate presentation of your selected expansions
