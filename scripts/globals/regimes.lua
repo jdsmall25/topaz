@@ -991,13 +991,12 @@ tpz.regime.clearRegimeVars = function(player)
 end
 
 tpz.regime.bookOnTrigger = function(player, regimeType)
+    local info = regimeInfo[regimeType].zone[player:getZoneID()]
      -- checks if hunt is active, if so prompts player to cancel
-  if player:getCharVar("[hunt]status") >= 1 then
-     player:startEvent(info.event, 0, 0, 3, 1, 0, 0, player:getCurrency("valor_point"), player:getCharVar("[hunt]page"))
+    if player:getCharVar("[hunt]status") >= 1 then
+        player:startEvent(info.event, 0, 0, 3, 1, 0, 0, player:getCurrency("valor_point"), player:getCharVar("[hunt]id"))
 
-  elseif (regimeType == tpz.regime.type.FIELDS and ENABLE_FIELD_MANUALS == 1) or (regimeType == tpz.regime.type.GROUNDS and ENABLE_GROUNDS_TOMES == 1) then
-        local info = regimeInfo[regimeType].zone[player:getZoneID()]
-
+    elseif (regimeType == tpz.regime.type.FIELDS and ENABLE_FIELD_MANUALS == 1) or (regimeType == tpz.regime.type.GROUNDS and ENABLE_GROUNDS_TOMES == 1) then
         -- arg2 is a bitmask that controls which pages appear for examination
         -- here, we only show pages that have regime info
         -- arg4 reduces prices of field suppord
@@ -1064,16 +1063,16 @@ tpz.regime.bookOnEventFinish = function(player, option, regimeType)
 
     option = bit.band(option, 0x7FFFFFFF)
 
+    if option == 7 then
+      tpz.hunts.clearHuntVars(player)
+    end
+
     -- check valid option
     local opts = getFinishOpts(regimeType)
     local opt = opts[option]
 
     if not opt then
         return
-    end
-
-    if option == 7 then
-      tpz.hunts.clearHuntVars(player)
     end
 
     local cost = opt.cost
@@ -1227,8 +1226,13 @@ tpz.regime.checkRegime = function(player, mob, regimeId, index, regimeType)
         return
     end
 
-    -- people in alliance get no Fields credit unless fov_allow_alliance is 1 in map.conf
-    if regimeType == tpz.regime.type.FIELDS and player:checkSoloPartyAlliance() == 2 and not player:checkFovAllianceAllowed() == 1 then
+    -- people in alliance get no fields credit unless FOV_REWARD_ALLIANCE is 1 in scripts/globals/settings.lua
+    if FOV_REWARD_ALLIANCE ~= 1 and regimeType == tpz.regime.type.FIELDS and player:checkSoloPartyAlliance() == 2 then
+        return
+    end
+
+    -- people in alliance get no grounds credit unless GOV_REWARD_ALLIANCE is 1 in scripts/globals/settings.lua
+    if GOV_REWARD_ALLIANCE ~= 1 and regimeType == tpz.regime.type.GROUNDS and player:checkSoloPartyAlliance() == 2 then
         return
     end
 
