@@ -16,6 +16,9 @@ zones[tpz.zone.ABYSSEA_VUNKERL] =
         GIL_OBTAINED            = 6389, -- Obtained <number> gil.
         KEYITEM_OBTAINED        = 6391, -- Obtained key item: <keyitem>.
         CRUOR_TOTAL             = 6986, -- Obtained <number> cruor. (Total: <number>)
+        CARRIED_OVER_POINTS     = 6999, -- You have carried over <number> login point[/s].
+        LOGIN_CAMPAIGN_UNDERWAY = 7000, -- The [/January/February/March/April/May/June/July/August/September/October/November/December] <number> Login Campaign is currently underway!<space>
+        LOGIN_NUMBER            = 7001, -- In celebration of your most recent login (login no. <number>), we have provided you with <number> points! You currently have a total of <number> points.
         FISHING_MESSAGE_OFFSET  = 7049, -- You can't fish here.
         CRUOR_OBTAINED          = 7495, -- <name> obtained <number> cruor.
     },
@@ -26,6 +29,8 @@ zones[tpz.zone.ABYSSEA_VUNKERL] =
     {
         QM_POPS =
         {
+            -- TODO: the first item, e.g. 'qm1', is unused and will be meaningless once I (Wren) finish entity-QC on all Abyssea zones.
+            -- When that is done, I will rewrite Abyssea global and adjust and neaten this table
             --  [17666576] = { 'qm1', {3098},                                                                                          {}, 17666487}, -- Khalkotaur
             --  [17666577] = { 'qm2', {3099},                                                                                          {}, 17666488}, -- Quasimodo
             --  [17666578] = { 'qm3', {3100},                                                                                          {}, 17666489}, -- Iku-Turso

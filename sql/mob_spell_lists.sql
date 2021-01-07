@@ -621,7 +621,7 @@ INSERT INTO `mob_spell_lists` VALUES ('Kam_Lanaut',21,356,76,255);
 INSERT INTO `mob_spell_lists` VALUES ('Kam_Lanaut',21,357,75,255);
 INSERT INTO `mob_spell_lists` VALUES ('Kam_Lanaut',21,359,75,255);
 INSERT INTO `mob_spell_lists` VALUES ('Kam_Lanaut',21,360,75,255);
-INSERT INTO `mob_spell_lists` VALUES ('Kam_Lanaut',21,366,76,255);
+INSERT INTO `mob_spell_lists` VALUES ('Kam_Lanaut',21,366,75,255);
 INSERT INTO `mob_spell_lists` VALUES ('Eald_Narche',22,204,75,255);
 INSERT INTO `mob_spell_lists` VALUES ('Eald_Narche',22,206,75,255);
 INSERT INTO `mob_spell_lists` VALUES ('Eald_Narche',22,208,75,255);
@@ -1249,12 +1249,6 @@ INSERT INTO `mob_spell_lists` VALUES ('Deviator',113,195,1,255);
 INSERT INTO `mob_spell_lists` VALUES ('Deviator',113,200,1,255);
 INSERT INTO `mob_spell_lists` VALUES ('Deviator',113,226,1,255); -- might not have access to poisonga 2
 INSERT INTO `mob_spell_lists` VALUES ('Deviator',113,274,1,255);
-INSERT INTO `mob_spell_lists` VALUES ('Provoker',114,100,1,255);
-INSERT INTO `mob_spell_lists` VALUES ('Provoker',114,101,1,255);
-INSERT INTO `mob_spell_lists` VALUES ('Provoker',114,102,1,255);
-INSERT INTO `mob_spell_lists` VALUES ('Provoker',114,103,1,255);
-INSERT INTO `mob_spell_lists` VALUES ('Provoker',114,104,1,255);
-INSERT INTO `mob_spell_lists` VALUES ('Provoker',114,105,1,255);
 INSERT INTO `mob_spell_lists` VALUES ('Diabolos_Darkness_Named',115,254,1,255);
 INSERT INTO `mob_spell_lists` VALUES ('Diabolos_Darkness_Named',115,231,1,255);
 INSERT INTO `mob_spell_lists` VALUES ('Diabolos_Darkness_Named',115,245,1,255);
@@ -2528,6 +2522,8 @@ INSERT INTO `mob_spell_lists` VALUES ('Ghul-I-Beaban_BLM',305,179,1,255); -- bli
 INSERT INTO `mob_spell_lists` VALUES ('Saa_Doyi_the_Fervid',306,320,1,255); -- katon_ichi
 INSERT INTO `mob_spell_lists` VALUES ('Frost_Flambeau',307,180,1,255); -- blizzaga_ii
 
+-- Trusts
+
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Shantotto',308,144,13,255);       -- Fire
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Shantotto',308,145,38,255);       -- Fire II
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Shantotto',308,146,62,255);       -- Fire III
@@ -2567,6 +2563,13 @@ INSERT INTO `mob_spell_lists` VALUES ('TRUST_Kupipi',310,3,21,255);            -
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Kupipi',310,4,41,255);            -- Cure IV
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Kupipi',310,5,61,255);            -- Cure V
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Kupipi',310,6,80,255);            -- Cure VI
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Kupipi',310,14,6,255);            -- Poisona
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Kupipi',310,15,9,255);            -- Paralyna
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Kupipi',310,16,14,255);           -- Blindna
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Kupipi',310,17,19,255);           -- Silena
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Kupipi',310,18,39,255);           -- Stona
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Kupipi',310,19,34,255);           -- Viruna
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Kupipi',310,20,29,255);           -- Cursna
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Kupipi',310,56,13,255);           -- Slow
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Kupipi',310,58,6,255);            -- Paralyze
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Kupipi',310,112,45,255);          -- Flash
@@ -3905,6 +3908,16 @@ INSERT INTO `mob_spell_lists` VALUES ('EaldNarche (Apoc Nigh)',432,201,75,255);-
 INSERT INTO `mob_spell_lists` VALUES ('EaldNarche (Apoc Nigh)',432,274,75,255);-- sleepga_ii
 INSERT INTO `mob_spell_lists` VALUES ('EaldNarche (Apoc Nigh)',432,362,75,255);-- bindga
 
+INSERT INTO `mob_spell_lists` VALUES ('Bladmall',433,46,63,255);  -- Protect IV
+INSERT INTO `mob_spell_lists` VALUES ('Bladmall',433,133,68,255); -- Shellra IV
+INSERT INTO `mob_spell_lists` VALUES ('Bladmall',433,172,70,255); -- Water IV
+INSERT INTO `mob_spell_lists` VALUES ('Bladmall',433,200,44,255); -- Waterga II
+INSERT INTO `mob_spell_lists` VALUES ('Bladmall',433,201,65,255); -- Waterga III
+INSERT INTO `mob_spell_lists` VALUES ('Bladmall',433,214,1,255);  -- Flood
+
+INSERT INTO `mob_spell_lists` VALUES ('Nepionic_Bladmall',434,51,68,255); -- Shell IV
+INSERT INTO `mob_spell_lists` VALUES ('Nepionic_Bladmall',434,46,63,255); -- Protect IV
+INSERT INTO `mob_spell_lists` VALUES ('Nepionic_Bladmall',434,4,41,255);  -- Cure IV
 
 
 /*!40000 ALTER TABLE `mob_spell_lists` ENABLE KEYS */;

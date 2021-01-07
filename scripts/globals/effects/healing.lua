@@ -9,6 +9,7 @@ require("scripts/globals/quests")
 require("scripts/globals/settings")
 require("scripts/globals/status")
 require("scripts/globals/zone")
+require("scripts/globals/roe")
 -----------------------------------
 
 function onEffectGain(target, effect)
@@ -49,6 +50,16 @@ function onEffectTick(target, effect)
             else
                 target:addTP(HEALING_TP_CHANGE)
                 healHP = 50 + (healtime - 2) + target:getMod(tpz.mod.HPHEAL)
+            end
+
+            -- Records of Eminence: Heal Without Using Magic
+            if
+                target:getObjType() == tpz.objType.PC and
+                target:getEminenceProgress(4) and
+                healHP > 0 and
+                target:getHPP() < 100
+            then
+                tpz.roe.onRecordTrigger(target, 4)
             end
 
             target:addHP(healHP)

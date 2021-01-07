@@ -24,25 +24,27 @@
 
 #include "battleentity.h"
 
-#include "../lua/luautils.h"
-#include "../utils/battleutils.h"
-#include "../items/item_weapon.h"
-#include "../status_effect_container.h"
-#include "../recast_container.h"
 #include "../ai/ai_container.h"
 #include "../ai/states/attack_state.h"
-#include "../ai/states/magic_state.h"
 #include "../ai/states/death_state.h"
-#include "../ai/states/raise_state.h"
-#include "../ai/states/inactive_state.h"
-#include "../ai/states/weaponskill_state.h"
 #include "../ai/states/despawn_state.h"
+#include "../ai/states/inactive_state.h"
+#include "../ai/states/magic_state.h"
+#include "../ai/states/raise_state.h"
+#include "../ai/states/weaponskill_state.h"
 #include "../attack.h"
 #include "../attackround.h"
-#include "../weapon_skill.h"
+#include "../notoriety_container.h"
+#include "../items/item_weapon.h"
+#include "../lua/luautils.h"
 #include "../packets/action.h"
+#include "../recast_container.h"
+#include "../roe.h"
+#include "../status_effect_container.h"
+#include "../utils/battleutils.h"
 #include "../utils/petutils.h"
 #include "../utils/puppetutils.h"
+#include "../weapon_skill.h"
 
 CBattleEntity::CBattleEntity()
 {
@@ -75,6 +77,7 @@ CBattleEntity::CBattleEntity()
 
     StatusEffectContainer = std::make_unique<CStatusEffectContainer>(this);
     PRecastContainer = std::make_unique<CRecastContainer>(this);
+    PNotorietyContainer = std::make_unique<CNotorietyContainer>(this);
 
     m_modStat[Mod::SLASHRES] = 1000;
     m_modStat[Mod::PIERCERES] = 1000;
@@ -216,7 +219,17 @@ int32 CBattleEntity::GetMaxMP()
 
 uint8 CBattleEntity::GetSpeed()
 {
-    return (isMounted() ? 40 + map_config.mount_speed_mod : std::clamp<uint16>(speed * (100 + getMod(Mod::MOVE)) / 100, std::numeric_limits<uint8>::min(), std::numeric_limits<uint8>::max()));
+    int16 startingSpeed = isMounted() ? 40 + map_config.mount_speed_mod : speed;
+
+    // Mod::MOVE (169)
+    // Mod::MOUNT_MOVE (972)
+    Mod mod = isMounted() ? Mod::MOUNT_MOVE : Mod::MOVE;
+
+    float modAmount = (100.0f + static_cast<float>(getMod(mod))) / 100.0f;
+    float modifiedSpeed = static_cast<float>(startingSpeed) * modAmount;
+    uint8 outputSpeed = static_cast<uint8>(modifiedSpeed);
+
+    return std::clamp<uint8>(outputSpeed, std::numeric_limits<uint8>::min(), std::numeric_limits<uint8>::max());
 }
 
 bool CBattleEntity::CanRest()
@@ -521,6 +534,13 @@ int32 CBattleEntity::takeDamage(int32 amount, CBattleEntity* attacker /* = nullp
 {
     PLastAttacker = attacker;
     PAI->EventHandler.triggerListener("TAKE_DAMAGE", this, amount, attacker, (uint16)attackType, (uint16)damageType);
+
+    //RoE Damage Taken Trigger
+    if (this->objtype == TYPE_PC)
+        roeutils::event(ROE_EVENT::ROE_DMGTAKEN, static_cast<CCharEntity*>(this), RoeDatagram("dmg", amount));
+    else if (PLastAttacker && PLastAttacker->objtype == TYPE_PC)
+        roeutils::event(ROE_EVENT::ROE_DMGDEALT, static_cast<CCharEntity*>(attacker), RoeDatagram("dmg", amount));
+
     return addHP(-amount);
 }
 
@@ -660,11 +680,14 @@ uint16 CBattleEntity::ACC(uint8 attackNumber, uint8 offsetAccuracy)
                 skill = weapon->getSkillType();
                 iLvlSkill = weapon->getILvlSkill();
                 if (skill == SKILL_NONE && GetSkill(SKILL_HAND_TO_HAND) > 0)
-                    if (auto main_weapon = dynamic_cast<CItemWeapon*>(m_Weapons[SLOT_MAIN]);
-                       (main_weapon && main_weapon->getSkillType() == SKILL_NONE) || main_weapon->getSkillType() == SKILL_HAND_TO_HAND)
+                {
+                    auto main_weapon = dynamic_cast<CItemWeapon*>(m_Weapons[SLOT_MAIN]);
+                    if (main_weapon && (main_weapon->getSkillType() == SKILL_NONE || main_weapon->getSkillType() == SKILL_HAND_TO_HAND))
                     {
                         skill = SKILL_HAND_TO_HAND;
                     }
+                }
+
             }
         }
         else if (attackNumber == 2)
@@ -1186,17 +1209,37 @@ bool CBattleEntity::ValidTarget(CBattleEntity* PInitiator, uint16 targetFlags)
     {
         if (!isDead())
         {
-            if (allegiance == (PInitiator->allegiance % 2 == 0 ? PInitiator->allegiance + 1 : PInitiator->allegiance - 1))
+            // Teams PVP
+            if (allegiance >= ALLEGIANCE_WYVERNS &&
+                PInitiator->allegiance >= ALLEGIANCE_WYVERNS)
             {
-                return true;
+                return allegiance != PInitiator->allegiance;
             }
+
+            // Nation PVP
+            if ((allegiance >= ALLEGIANCE_SAN_DORIA && allegiance <= ALLEGIANCE_WINDURST) &&
+                (PInitiator->allegiance >= ALLEGIANCE_SAN_DORIA && PInitiator->allegiance <= ALLEGIANCE_WINDURST))
+            {
+                return allegiance != PInitiator->allegiance;
+            }
+
+            // PVE
+            if (allegiance <= ALLEGIANCE_PLAYER &&
+                PInitiator->allegiance <= ALLEGIANCE_PLAYER)
+            {
+                return allegiance != PInitiator->allegiance;
+            }
+
+            return false;
         }
     }
+
     if ((targetFlags & TARGET_SELF) && (this == PInitiator || (PInitiator->objtype == TYPE_PET &&
         static_cast<CPetEntity*>(PInitiator)->getPetType() == PETTYPE_AUTOMATON && this == PInitiator->PMaster)))
     {
         return true;
     }
+
     return false;
 }
 
@@ -1752,6 +1795,7 @@ bool CBattleEntity::OnAttack(CAttackState& state, action_t& action)
     battleutils::ClaimMob(PTarget, this);
     PAI->EventHandler.triggerListener("ATTACK", this, PTarget, &action);
     PTarget->PAI->EventHandler.triggerListener("ATTACKED", PTarget, this, &action);
+    PTarget->LastAttacked = server_clock::now();
     /////////////////////////////////////////////////////////////////////////////////////////////
     // End of attack loop
     /////////////////////////////////////////////////////////////////////////////////////////////

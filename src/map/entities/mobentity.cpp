@@ -48,6 +48,7 @@
 #include "../mob_modifier.h"
 #include "../weapon_skill.h"
 #include "../mobskill.h"
+#include "../roe.h"
 #include "../treasure_pool.h"
 #include "../conquest_system.h"
 
@@ -284,10 +285,16 @@ bool CMobEntity::CanLink(position_t* pos, int16 superLink)
         return false;
     }
 
+    // Don't link I'm an underground antlion
+    if ((m_roamFlags & ROAMFLAG_AMBUSH) && IsNameHidden())
+    {
+        return false;
+    }
+
     // link only if I see him
     if (m_Detects & DETECT_SIGHT) {
 
-        if (!isFaceing(loc.p, *pos, 40))
+        if (!facing(loc.p, *pos, 64))
         {
             return false;
         }
@@ -776,6 +783,15 @@ void CMobEntity::DistributeRewards()
             {
                 charutils::DistributeGil(PChar, this); // TODO: REALISATION MUST BE IN TREASUREPOOL
             }
+
+            // RoE Mob kill event for all party members
+            PChar->ForAlliance([this, PChar](CBattleEntity* PMember)
+            {
+                if (PMember->getZone() == PChar->getZone())
+                {
+                    roeutils::event(ROE_MOBKILL, (CCharEntity*)PMember, RoeDatagram("mob", (CMobEntity*)this));
+                }
+            });
 
             DropItems(PChar);
         }

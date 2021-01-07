@@ -16,6 +16,9 @@ zones[tpz.zone.ABYSSEA_LA_THEINE] =
         GIL_OBTAINED            = 6389, -- Obtained <number> gil.
         KEYITEM_OBTAINED        = 6391, -- Obtained key item: <keyitem>.
         CRUOR_TOTAL             = 6986, -- Obtained <number> cruor. (Total: <number>)
+        CARRIED_OVER_POINTS     = 6999, -- You have carried over <number> login point[/s].
+        LOGIN_CAMPAIGN_UNDERWAY = 7000, -- The [/January/February/March/April/May/June/July/August/September/October/November/December] <number> Login Campaign is currently underway!<space>
+        LOGIN_NUMBER            = 7001, -- In celebration of your most recent login (login no. <number>), we have provided you with <number> points! You currently have a total of <number> points.
         FISHING_MESSAGE_OFFSET  = 7049, -- You can't fish here.
         CRUOR_OBTAINED          = 7495, -- <name> obtained <number> cruor.
     },
@@ -26,6 +29,8 @@ zones[tpz.zone.ABYSSEA_LA_THEINE] =
     {
         QM_POPS =
         {
+            -- TODO: the first item, e.g. 'qm1', is unused and will be meaningless once I (Wren) finish entity-QC on all Abyssea zones.
+            -- When that is done, I will rewrite Abyssea global and adjust and neaten this table
             --  [17318473] = { 'qm1', {2891},                                                                                                                      {}, 17318434}, -- Dozing Dorian
             --  [17318474] = { 'qm2', {2892},                                                                                                                      {}, 17318435}, -- Trudging Thomas
             --  [17318475] = { 'qm3', {2893},                                                                                                                      {}, 17318436}, -- Megantereon
