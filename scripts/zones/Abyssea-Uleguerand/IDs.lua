@@ -16,6 +16,9 @@ zones[tpz.zone.ABYSSEA_ULEGUERAND] =
         GIL_OBTAINED            = 6389, -- Obtained <number> gil.
         KEYITEM_OBTAINED        = 6391, -- Obtained key item: <keyitem>.
         CRUOR_TOTAL             = 6986, -- Obtained <number> cruor. (Total: <number>)
+        CARRIED_OVER_POINTS     = 6999, -- You have carried over <number> login point[/s].
+        LOGIN_CAMPAIGN_UNDERWAY = 7000, -- The [/January/February/March/April/May/June/July/August/September/October/November/December] <number> Login Campaign is currently underway!<space>
+        LOGIN_NUMBER            = 7001, -- In celebration of your most recent login (login no. <number>), we have provided you with <number> points! You currently have a total of <number> points.
         CRUOR_OBTAINED          = 7395, -- <name> obtained <number> cruor.
     },
     mob =
@@ -25,6 +28,8 @@ zones[tpz.zone.ABYSSEA_ULEGUERAND] =
     {
         QM_POPS =
         {
+            -- TODO: the first item, e.g. 'qm1', is unused and will be meaningless once I (Wren) finish entity-QC on all Abyssea zones.
+            -- When that is done, I will rewrite Abyssea global and adjust and neaten this table
             --  [17813949] = { 'qm1',      {3245, 3251},                                                           {}, 17813925}, -- Ironclad Triturator
             --  [17813950] = { 'qm2', {3246, 3247, 3253},                                                           {}, 17813927}, -- Dhorme Khimaira
             --  [17813951] = { 'qm3',      {3248, 3257},                                                           {}, 17813930}, -- Blanga

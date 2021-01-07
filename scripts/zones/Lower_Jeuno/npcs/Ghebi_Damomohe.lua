@@ -18,10 +18,16 @@ function onTrade(player, npc, trade)
     if player:getQuestStatus(JEUNO, tpz.quest.id.jeuno.TENSHODO_MEMBERSHIP) ~= QUEST_COMPLETED and npcUtil.tradeHas(trade, 548) then
         -- Finish Quest: Tenshodo Membership (Invitation)
         player:startEvent(108)
-    elseif player:getCurrentMission(COP) == tpz.mission.id.cop.DARKNESS_NAMED and
-           not player:hasKeyItem(tpz.ki.PSOXJA_PASS) and
-           player:getCharVar("PXPassGetGems") == 1 and
-           (npcUtil.tradeHas(trade, 1692) or npcUtil.tradeHas(trade, 1694) or npcUtil.tradeHas(trade, 1693)) then
+    elseif
+        player:getCurrentMission(COP) == tpz.mission.id.cop.DARKNESS_NAMED and
+        not player:hasKeyItem(tpz.ki.PSOXJA_PASS) and
+        player:getCharVar("PXPassGetGems") == 1 and
+        (
+            npcUtil.tradeHas(trade, 1692) or
+            npcUtil.tradeHas(trade, 1694) or
+            npcUtil.tradeHas(trade, 1693)
+        )
+    then
         player:startEvent(52, 500 * GIL_RATE)
     end
 end
@@ -62,12 +68,12 @@ function onEventFinish(player, csid, option)
         player:addQuest(JEUNO, tpz.quest.id.jeuno.TENSHODO_MEMBERSHIP)
     elseif csid == 107 then
         -- Finish Quest: Tenshodo Membership (Application Form)
-        if npcUtil.completeQuest(player, JEUNO, tpz.quest.id.jeuno.TENSHODO_MEMBERSHIP, { item=548, title=tpz.title.TENSHODO_MEMBER, keyItem=tpz.ki.TENSHODO_MEMBERS_CARD }) then
+        if npcUtil.completeQuest(player, JEUNO, tpz.quest.id.jeuno.TENSHODO_MEMBERSHIP, { item=548, title=tpz.title.TENSHODO_MEMBER, ki=tpz.ki.TENSHODO_MEMBERS_CARD }) then
             player:delKeyItem(tpz.ki.TENSHODO_APPLICATION_FORM)
         end
     elseif csid == 108 then
         -- Finish Quest: Tenshodo Membership (Invitation)
-        if npcUtil.completeQuest(player, JEUNO, tpz.quest.id.jeuno.TENSHODO_MEMBERSHIP, { item=548, title=tpz.title.TENSHODO_MEMBER, keyItem=tpz.ki.TENSHODO_MEMBERS_CARD }) then
+        if npcUtil.completeQuest(player, JEUNO, tpz.quest.id.jeuno.TENSHODO_MEMBERSHIP, { item=548, title=tpz.title.TENSHODO_MEMBER, ki=tpz.ki.TENSHODO_MEMBERS_CARD }) then
             player:confirmTrade()
             player:delKeyItem(tpz.ki.TENSHODO_APPLICATION_FORM)
         end

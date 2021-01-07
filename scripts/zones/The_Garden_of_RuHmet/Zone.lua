@@ -136,9 +136,9 @@ function onRegionEnter(player, region)
         {
             [1] = function (x)
                 if (player:getCurrentMission(COP)==tpz.mission.id.cop.DAWN or player:hasCompletedMission(COP, tpz.mission.id.cop.DAWN) or player:hasCompletedMission(COP, tpz.mission.id.cop.THE_LAST_VERSE) ) then
-                   player:startEvent(101)
+                    player:startEvent(101)
                 else
-                   player:startEvent(155)
+                    player:startEvent(155)
                 end
             end, --101
 
@@ -211,6 +211,8 @@ function onEventFinish(player, csid, option)
         player:setCharVar("Ru-Hmet-TP", 0)
     elseif (csid == 201) then
         player:setCharVar("PromathiaStatus", 1)
+        player:addKeyItem(tpz.ki.MYSTERIOUS_AMULET_PRISHE)
+        player:messageSpecial(ID.text.KEYITEM_OBTAINED, tpz.ki.MYSTERIOUS_AMULET)
     elseif (csid == 32000 and option==1) then
         player:setPos(420, 0, 398, 68)
     end

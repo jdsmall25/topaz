@@ -8,6 +8,8 @@ require("scripts/globals/magic")
 require("scripts/globals/utils")
 require("scripts/globals/zone")
 require("scripts/globals/msg")
+require("scripts/globals/npc_util")
+require("scripts/globals/roe")
 require("scripts/globals/settings")
 -----------------------------------
 
@@ -38,6 +40,7 @@ function onMobDeathEx(mob, player, isKiller, isWeaponSkillKill)
             player:addCharVar("testingTime_crea_count", 1)
         end
     end
+
 end
 
 -------------------------------------------------
@@ -46,7 +49,7 @@ end
 
 -- is a lottery NM already spawned or primed to pop?
 local function lotteryPrimed(phList)
-   
+
     local nm
     for k, v in pairs(phList) do
         nm = GetMobByID(v)
@@ -60,8 +63,16 @@ end
 -- potential lottery placeholder was killed
 tpz.mob.phOnDespawn = function(ph, phList, chance, cooldown, immediate)
     if type(immediate) ~= "boolean" then immediate = false end
-    
+
     if DISABLE_LOTTERY_NM_SYSTEM == 1 then return false end
+
+    if NM_LOTTERY_CHANCE then
+        chance = NM_LOTTERY_CHANCE >= 0 and (chance * NM_LOTTERY_CHANCE) or 100
+    end
+
+    if NM_LOTTERYCOOLDOWN then
+        cooldown = NM_LOTTERY_COOLDOWN >= 0 and (cooldown * NM_LOTTERY_COOLDOWN) or cooldown
+    end
 
     local phId = ph:getID()
     local nmId = phList[phId]
@@ -71,7 +82,8 @@ tpz.mob.phOnDespawn = function(ph, phList, chance, cooldown, immediate)
         if nm ~= nil then
             local pop = nm:getLocalVar("pop")
 
-            if os.time() > pop and not lotteryPrimed(phList) and math.random(100) <= chance then
+            chance = math.ceil(chance * 10) -- chance / 1000.
+            if os.time() > pop and not lotteryPrimed(phList) and math.random(1000) <= chance then
 
                 -- on PH death, replace PH repop with NM repop
                 DisallowRespawn(phId, true)
